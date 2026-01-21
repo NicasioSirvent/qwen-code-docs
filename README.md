@@ -180,3 +180,59 @@ After getting Qwen Code installed and running, explore more advanced features an
 - Explore advanced capabilities in the Deep Dive section, including Subagents System, Built-in Tools Reference, and Model Context Protocol (MCP)
 - Set up IDE Integration for VS Code, Zed, or JetBrains
 - Build custom applications with the TypeScript SDK starting with SDK Quick Start
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Get started in 30 seconds](#get-started-in-30-seconds)
+- [What Qwen Code does for you](#what-qwen-code-does-for-you)
+- [Why developers love Qwen Code](#why-developers-love-qwen-code)
+- [Key Features](#key-features)
+  - [Build Features from Descriptions](#build-features-from-descriptions)
+  - [Debug and Fix Issues](#debug-and-fix-issues)
+  - [Navigate Any Codebase](#navigate-any-codebase)
+  - [Automate Tedious Tasks](#automate-tedious-tasks)
+- [Architecture Overview](#architecture-overview)
+  - [Core Components](#core-components)
+  - [Interaction Flow](#interaction-flow)
+  - [Configuration Options](#configuration-options)
+- [Getting Started in 30 Seconds](#getting-started-in-30-seconds)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [First Session](#first-session)
+- [What's Next](#whats-next)
+
+For more detailed information, see the complete documentation:
+
+### User Documentation
+
+#### Getting Started
+- [Overview](./README.md#overview) - Introduction to Qwen Code and its capabilities
+- [Quick Start Guide](./docs/users/quickstart.md) - Getting started in 30 seconds
+- [Common Workflows](./docs/users/common-workflow.md) - Common tasks and best practices
+
+#### Core Features
+- [Architecture Overview](./docs/developers/architecture.md) - System architecture and components
+- [Subagents](./docs/users/features/sub-agents.md) - Breaking complex tasks into specialized subtasks
+- [Commands](./docs/users/features/tools.md) - Managing sessions, customizing interface, controlling behavior
+- [Approval Mode](./docs/users/features/approval-mode.md) - Controlling permissions and safety
+- [Agent Skills (Experimental)](./docs/users/features/skills.md) - Extending capabilities with modular skills
+- [Model Context Protocol (MCP)](./docs/users/features/mcp.md) - Connecting to external tools and data sources
+- [Headless Mode](./docs/users/features/headless.md) - Non-interactive automation capabilities
+- [Vision Models and Multimodal](./docs/users/features/vision-models.md) - Vision and multimodal capabilities
+
+#### Configuration
+- [Authentication](./docs/users/configuration/auth.md) - OAuth and API key options
+
+#### IDE Integration
+- [VS Code Integration](./docs/users/integration-vscode.md) - Using Qwen Code in VS Code
+- [Zed Integration](./docs/users/integration-zed.md) - Using Qwen Code in Zed
+- [JetBrains Integration](./docs/users/integration-jetbrains.md) - Using Qwen Code in JetBrains IDEs
+
+### Developer Documentation
+
+#### Architecture
+- [System Architecture](./docs/developers/architecture.md) - Technical architecture overview
+
+### Additional Resources
+- [Beyond Code Assistance](./beyond-code-assistance.md) - Additional use cases beyond code assistance
