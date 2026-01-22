@@ -181,33 +181,11 @@ After getting Qwen Code installed and running, explore more advanced features an
 - Set up IDE Integration for VS Code, Zed, or JetBrains
 - Build custom applications with the TypeScript SDK starting with SDK Quick Start
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Get started in 30 seconds](#get-started-in-30-seconds)
-- [What Qwen Code does for you](#what-qwen-code-does-for-you)
-- [Why developers love Qwen Code](#why-developers-love-qwen-code)
-- [Key Features](#key-features)
-  - [Build Features from Descriptions](#build-features-from-descriptions)
-  - [Debug and Fix Issues](#debug-and-fix-issues)
-  - [Navigate Any Codebase](#navigate-any-codebase)
-  - [Automate Tedious Tasks](#automate-tedious-tasks)
-- [Architecture Overview](#architecture-overview)
-  - [Core Components](#core-components)
-  - [Interaction Flow](#interaction-flow)
-  - [Configuration Options](#configuration-options)
-- [Getting Started in 30 Seconds](#getting-started-in-30-seconds)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [First Session](#first-session)
-- [What's Next](#whats-next)
-
 For more detailed information, see the complete documentation:
 
 ### User Documentation
 
 #### Getting Started
-- [Overview](./README.md#overview) - Introduction to Qwen Code and its capabilities
 - [Quick Start Guide](./docs/users/quickstart.md) - Getting started in 30 seconds
 - [Common Workflows](./docs/users/common-workflow.md) - Common tasks and best practices
 
