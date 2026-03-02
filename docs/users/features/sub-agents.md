@@ -1,93 +1,123 @@
-# Subagents
+# Sub-Agents
 
-Subagents are specialized AI assistants that handle specific types of tasks within Qwen Code. They allow you to delegate focused work to AI agents that are configured with task-specific prompts, tools, and behaviors.
+## What Are Sub-Agents?
 
-## What are Subagents?
+**Sub-agents** are specialized AI assistants that handle specific types of tasks within Qwen Code. They are independent AI assistants configured with task-specific prompts, tools, and behaviors.
 
-Subagents are independent AI assistants that:
+### Key Characteristics
 
-- **Specialize in specific tasks** - Each Subagent is configured with a focused system prompt for particular types of work
-- **Have separate context** - They maintain their own conversation history, separate from your main chat
-- **Use controlled tools** - You can configure which tools each Subagent has access to
-- **Work autonomously** - Once given a task, they work independently until completion or failure
-- **Provide detailed feedback** - You can see their progress, tool usage, and execution statistics in real-time
+| Characteristic | Description |
+|----------------|-------------|
+| **Specialize in specific tasks** | Each sub-agent has a focused system prompt for particular types of work |
+| **Separate context** | They maintain their own conversation history, separate from your main chat |
+| **Controlled tools** | You can configure which tools each sub-agent has access to |
+| **Autonomous work** | Once given a task, they work independently until completion or failure |
+| **Detailed feedback** | You can see their progress, tool usage, and execution statistics in real-time |
+
+### How Sub-Agents Work
+
+1. **Configuration** — You create sub-agent configurations that define their behavior, tools, and system prompts
+2. **Delegation** — The main AI can automatically delegate tasks to appropriate sub-agents
+3. **Execution** — Sub-agents work independently, using their configured tools to complete tasks
+4. **Results** — They return results and execution summaries back to the main conversation
+
+---
 
 ## Key Benefits
 
-- **Task Specialization**: Create agents optimized for specific workflows (testing, documentation, refactoring, etc.)
-- **Context Isolation**: Keep specialized work separate from your main conversation
-- **Reusability**: Save and reuse agent configurations across projects and sessions
-- **Controlled Access**: Limit which tools each agent can use for security and focus
-- **Progress Visibility**: Monitor agent execution with real-time progress updates
+| Benefit | Description |
+|---------|-------------|
+| **Task Specialization** | Create agents optimized for specific workflows (testing, documentation, refactoring, etc.) |
+| **Context Isolation** | Keep specialized work separate from your main conversation |
+| **Reusability** | Save and reuse agent configurations across projects and sessions |
+| **Controlled Access** | Limit which tools each agent can use for security and focus |
+| **Progress Visibility** | Monitor agent execution with real-time progress updates |
 
-## How Subagents Work
+---
 
-1. **Configuration**: You create Subagents configurations that define their behavior, tools, and system prompts
-2. **Delegation**: The main AI can automatically delegate tasks to appropriate Subagents
-3. **Execution**: Subagents work independently, using their configured tools to complete tasks
-4. **Results**: They return results and execution summaries back to the main conversation
-
-## Getting Started
+## How to Use Sub-Agents
 
 ### Quick Start
 
-1. **Create your first Subagent**:
-
-   `/agents create`
-
+1. **Create your first sub-agent:**
+   ```bash
+   /agents create
+   ```
    Follow the guided wizard to create a specialized agent.
 
-2. **Manage existing agents**:
+2. **Manage existing agents:**
+   ```bash
+   /agents manage
+   ```
+   View and manage your configured sub-agents.
 
-   `/agents manage`
+3. **Use sub-agents automatically:** Simply ask the main AI to perform tasks that match your sub-agents' specializations. The AI will automatically delegate appropriate work.
 
-   View and manage your configured Subagents.
+### Usage Methods
 
-3. **Use Subagents automatically**: Simply ask the main AI to perform tasks that match your Subagents' specializations. The AI will automatically delegate appropriate work.
+#### Automatic Delegation
+Qwen Code proactively delegates tasks based on:
+- The task description in your request
+- The `description` field in sub-agent configurations
+- Current context and available tools
 
-### Example Usage
+> **Tip:** Include phrases like "use PROACTIVELY" or "MUST BE USED" in your description field to encourage more proactive sub-agent use.
 
-```
-User: "Please write comprehensive tests for the authentication module"
-AI: I'll delegate this to your testing specialist Subagents.
-[Delegates to "testing-expert" Subagents]
-[Shows real-time progress of test creation]
-[Returns with completed test files and execution summary]
-```
+#### Explicit Invocation
+Request a specific sub-agent by mentioning it in your command:
+- "Let the `testing-expert` sub-agent create unit tests for the payment module"
+- "Have the `documentation-writer` sub-agent update the API reference"
+- "Get the `react-specialist` sub-agent to optimize this component's performance"
+
+---
 
 ## Management
 
 ### CLI Commands
 
-Subagents are managed through the `/agents` slash command and its subcommands:
-
-**Usage:** `/agents create`. Creates a new Subagent through a guided step wizard.
-
-**Usage:** `/agents manage`. Opens an interactive management dialog for viewing and managing existing Subagents.
+| Command | Description |
+|---------|-------------|
+| `/agents create` | Creates a new sub-agent through a guided step wizard |
+| `/agents manage` | Opens an interactive management dialog for viewing and managing existing sub-agents |
+| `/agents` | List all available sub-agents |
 
 ### Storage Locations
 
-Subagents are stored as Markdown files in two locations:
+Sub-agents are stored as Markdown files in multiple locations (in order of precedence):
 
-- **Project-level**: `.qwen/agents/` (takes precedence)
-- **User-level**: `~/.qwen/agents/` (fallback)
+| Location | Path | Purpose |
+|----------|------|---------|
+| **Project-level** | `.qwen/agents/` | Highest precedence — project-specific agents |
+| **User-level** | `~/.qwen/agents/` | Fallback — personal agents across all projects |
+| **Extension-level** | Extension's `agents/` directory | Provided by installed extensions |
 
-This allows you to have both project-specific agents and personal agents that work across all projects.
+### Extension Sub-Agents
+
+Extensions can provide custom sub-agents that become available when the extension is enabled:
+
+- Automatically discovered when the extension is enabled
+- Appear in the `/agents manage` dialog under "Extension Agents" section
+- Cannot be edited directly (edit the extension source instead)
+- Follow the same configuration format as user-defined agents
+
+---
+
+## Configuration
 
 ### File Format
 
-Subagents are configured using Markdown files with YAML frontmatter. This format is human-readable and easy to edit with any text editor.
+Sub-agents are configured using **Markdown files with YAML frontmatter**.
 
-#### Basic Structure
+### Basic Structure
 
-```
+```yaml
 ---
 name: agent-name
 description: Brief description of when and how to use this agent
 tools:
-	- tool1
-	- tool2
-	- tool3 # Optional
+  - tool1
+  - tool2
+  - tool3 # Optional
 ---
 
 System prompt content goes here.
@@ -95,12 +125,21 @@ Multiple paragraphs are supported.
 You can use ${variable} templating for dynamic content.
 ```
 
-#### Example Usage
+### Available Template Variables
 
-```
+| Variable | Description |
+|----------|-------------|
+| `${project_name}` | Current project name |
+| `${task_description}` | The task being delegated |
+| `${current_directory}` | Working directory |
+| `${timestamp}` | Current timestamp |
+
+### Example Configuration
+
+```yaml
 ---
 name: project-documenter
-description: Creates project documentation and README files
+description: Creates project documentation and README files. Use PROACTIVELY when asked to write docs, create README, or document APIs.
 ---
 
 You are a documentation specialist for the ${project_name} project.
@@ -114,40 +153,18 @@ Focus on creating clear, comprehensive documentation that helps both
 new contributors and end users understand the project.
 ```
 
-## Using Subagents Effectively
+---
 
-### Automatic Delegation
-
-Qwen Code proactively delegates tasks based on:
-
-- The task description in your request
-- The description field in Subagents configurations
-- Current context and available tools
-
-To encourage more proactive Subagents use, include phrases like "use PROACTIVELY" or "MUST BE USED" in your description field.
-
-### Explicit Invocation
-
-Request a specific Subagent by mentioning it in your command:
-
-```
-Let the testing-expert Subagents create unit tests for the payment module
-Have the documentation-writer Subagents update the API reference
-Get the react-specialist Subagents to optimize this component's performance
-```
-
-## Examples
+## Built-in Sub-Agent Examples
 
 ### Development Workflow Agents
 
-#### Testing Specialist
+#### 1. Testing Specialist
 
-Perfect for comprehensive test creation and test-driven development.
-
-```
+```yaml
 ---
 name: testing-expert
-description: Writes comprehensive unit tests, integration tests, and handles test automation with best practices
+description: Writes comprehensive unit tests, integration tests, and handles test automation with best practices. Use PROACTIVELY when asked to write tests.
 tools:
   - read_file
   - write_file
@@ -158,7 +175,6 @@ tools:
 You are a testing specialist focused on creating high-quality, maintainable tests.
 
 Your expertise includes:
-
 - Unit testing with appropriate mocking and isolation
 - Integration testing for component interactions
 - Test-driven development practices
@@ -166,7 +182,6 @@ Your expertise includes:
 - Performance and load testing when appropriate
 
 For each testing task:
-
 1. Analyze the code structure and dependencies
 2. Identify key functionality, edge cases, and error conditions
 3. Create comprehensive test suites with descriptive names
@@ -179,19 +194,18 @@ Focus on both positive and negative test cases.
 ```
 
 **Use Cases:**
-
 - "Write unit tests for the authentication service"
 - "Create integration tests for the payment processing workflow"
 - "Add test coverage for edge cases in the data validation module"
 
-#### Documentation Writer
+---
 
-Specialized in creating clear, comprehensive documentation.
+#### 2. Documentation Writer
 
-```
+```yaml
 ---
 name: documentation-writer
-description: Creates comprehensive documentation, README files, API docs, and user guides
+description: Creates comprehensive documentation, README files, API docs, and user guides. Use PROACTIVELY when asked to write documentation.
 tools:
   - read_file
   - write_file
@@ -205,7 +219,6 @@ Your role is to create clear, comprehensive documentation that serves both
 developers and end users. Focus on:
 
 **For API Documentation:**
-
 - Clear endpoint descriptions with examples
 - Parameter details with types and constraints
 - Response format documentation
@@ -213,7 +226,6 @@ developers and end users. Focus on:
 - Authentication requirements
 
 **For User Documentation:**
-
 - Step-by-step instructions with screenshots when helpful
 - Installation and setup guides
 - Configuration options and examples
@@ -221,7 +233,6 @@ developers and end users. Focus on:
 - FAQ sections based on common user questions
 
 **For Developer Documentation:**
-
 - Architecture overviews and design decisions
 - Code examples that actually work
 - Contributing guidelines
@@ -232,19 +243,18 @@ the actual implementation. Use clear headings, bullet points, and examples.
 ```
 
 **Use Cases:**
-
 - "Create API documentation for the user management endpoints"
 - "Write a comprehensive README for this project"
 - "Document the deployment process with troubleshooting steps"
 
-#### Code Reviewer
+---
 
-Focused on code quality, security, and best practices.
+#### 3. Code Reviewer
 
-```
+```yaml
 ---
 name: code-reviewer
-description: Reviews code for best practices, security issues, performance, and maintainability
+description: Reviews code for best practices, security issues, performance, and maintainability. Use PROACTIVELY when asked to review code.
 tools:
   - read_file
   - read_many_files
@@ -253,7 +263,6 @@ tools:
 You are an experienced code reviewer focused on quality, security, and maintainability.
 
 Review criteria:
-
 - **Code Structure**: Organization, modularity, and separation of concerns
 - **Performance**: Algorithmic efficiency and resource usage
 - **Security**: Vulnerability assessment and secure coding practices
@@ -263,7 +272,6 @@ Review criteria:
 - **Testing**: Test coverage and testability considerations
 
 Provide constructive feedback with:
-
 1. **Critical Issues**: Security vulnerabilities, major bugs
 2. **Important Improvements**: Performance issues, design problems
 3. **Minor Suggestions**: Style improvements, refactoring opportunities
@@ -274,21 +282,20 @@ Prioritize issues by impact and provide rationale for recommendations.
 ```
 
 **Use Cases:**
-
 - "Review this authentication implementation for security issues"
 - "Check the performance implications of this database query logic"
 - "Evaluate the code structure and suggest improvements"
 
+---
+
 ### Technology-Specific Agents
 
-#### React Specialist
+#### 4. React Specialist
 
-Optimized for React development, hooks, and component patterns.
-
-```
+```yaml
 ---
 name: react-specialist
-description: Expert in React development, hooks, component patterns, and modern React best practices
+description: Expert in React development, hooks, component patterns, and modern React best practices. Use PROACTIVELY for React tasks.
 tools:
   - read_file
   - write_file
@@ -299,7 +306,6 @@ tools:
 You are a React specialist with deep expertise in modern React development.
 
 Your expertise covers:
-
 - **Component Design**: Functional components, custom hooks, composition patterns
 - **State Management**: useState, useReducer, Context API, and external libraries
 - **Performance**: React.memo, useMemo, useCallback, code splitting
@@ -308,7 +314,6 @@ Your expertise covers:
 - **Modern Patterns**: Suspense, Error Boundaries, Concurrent Features
 
 For React tasks:
-
 1. Use functional components and hooks by default
 2. Implement proper TypeScript typing
 3. Follow React best practices and conventions
@@ -321,19 +326,18 @@ Focus on accessibility and user experience considerations.
 ```
 
 **Use Cases:**
-
 - "Create a reusable data table component with sorting and filtering"
 - "Implement a custom hook for API data fetching with caching"
 - "Refactor this class component to use modern React patterns"
 
-#### Python Expert
+---
 
-Specialized in Python development, frameworks, and best practices.
+#### 5. Python Expert
 
-```
+```yaml
 ---
 name: python-expert
-description: Expert in Python development, frameworks, testing, and Python-specific best practices
+description: Expert in Python development, frameworks, testing, and Python-specific best practices. Use PROACTIVELY for Python tasks.
 tools:
   - read_file
   - write_file
@@ -344,7 +348,6 @@ tools:
 You are a Python expert with deep knowledge of the Python ecosystem.
 
 Your expertise includes:
-
 - **Core Python**: Pythonic patterns, data structures, algorithms
 - **Frameworks**: Django, Flask, FastAPI, SQLAlchemy
 - **Testing**: pytest, unittest, mocking, test-driven development
@@ -354,7 +357,6 @@ Your expertise includes:
 - **Code Quality**: PEP 8, type hints, linting with pylint/flake8
 
 For Python tasks:
-
 1. Follow PEP 8 style guidelines
 2. Use type hints for better code documentation
 3. Implement proper error handling with specific exceptions
@@ -367,90 +369,66 @@ Focus on writing clean, maintainable Python code that follows community standard
 ```
 
 **Use Cases:**
-
 - "Create a FastAPI service for user authentication with JWT tokens"
 - "Implement a data processing pipeline with pandas and error handling"
 - "Write a CLI tool using argparse with comprehensive help documentation"
+
+---
 
 ## Best Practices
 
 ### Design Principles
 
-#### Single Responsibility Principle
+#### 1. Single Responsibility Principle
+Each sub-agent should have a clear, focused purpose.
 
-Each Subagent should have a clear, focused purpose.
-
-**✅ Good:**
-
-```
----
+✅ **Good:**
+```yaml
 name: testing-expert
 description: Writes comprehensive unit tests and integration tests
----
 ```
 
-**❌ Avoid:**
-
-```
----
+❌ **Avoid:**
+```yaml
 name: general-helper
 description: Helps with testing, documentation, code review, and deployment
----
 ```
 
-**Why:** Focused agents produce better results and are easier to maintain.
-
-#### Clear Specialization
-
+#### 2. Clear Specialization
 Define specific expertise areas rather than broad capabilities.
 
-**✅ Good:**
-
-```
----
+✅ **Good:**
+```yaml
 name: react-performance-optimizer
 description: Optimizes React applications for performance using profiling and best practices
----
 ```
 
-**❌ Avoid:**
-
-```
----
+❌ **Avoid:**
+```yaml
 name: frontend-developer
 description: Works on frontend development tasks
----
 ```
 
-**Why:** Specific expertise leads to more targeted and effective assistance.
-
-#### Actionable Descriptions
-
+#### 3. Actionable Descriptions
 Write descriptions that clearly indicate when to use the agent.
 
-**✅ Good:**
-
+✅ **Good:**
+```yaml
+description: Reviews code for security vulnerabilities, performance issues, and maintainability concerns. Use PROACTIVELY for code reviews.
 ```
-description: Reviews code for security vulnerabilities, performance issues, and maintainability concerns
-```
 
-**❌ Avoid:**
-
-```
+❌ **Avoid:**
+```yaml
 description: A helpful code reviewer
 ```
-
-**Why:** Clear descriptions help the main AI choose the right agent for each task.
 
 ### Configuration Best Practices
 
 #### System Prompt Guidelines
 
 **Be Specific About Expertise:**
-
 ```
 You are a Python testing specialist with expertise in:
-
 - pytest framework and fixtures
 - Mock objects and dependency injection
 - Test-driven development practices
@@ -458,10 +436,8 @@ You are a Python testing specialist with expertise in:
 ```
 
 **Include Step-by-Step Approaches:**
-
 ```
 For each testing task:
-
 1. Analyze the code structure and dependencies
 2. Identify key functionality and edge cases
 3. Create comprehensive test suites with clear naming
@@ -470,21 +446,83 @@ For each testing task:
 ```
 
 **Specify Output Standards:**
-
 ```
 Always follow these standards:
-
 - Use descriptive test names that explain the scenario
 - Include both positive and negative test cases
 - Add docstrings for complex test functions
 - Ensure tests are independent and can run in any order
 ```
 
+---
+
 ## Security Considerations
 
-- **Tool Restrictions**: Subagents only have access to their configured tools
-- **Sandboxing**: All tool execution follows the same security model as direct tool use
-- **Audit Trail**: All Subagents actions are logged and visible in real-time
-- **Access Control**: Project and user-level separation provides appropriate boundaries
-- **Sensitive Information**: Avoid including secrets or credentials in agent configurations
-- **Production Environments**: Consider separate agents for production vs development environments
+| Consideration | Description |
+|---------------|-------------|
+| **Tool Restrictions** | Sub-agents only have access to their configured tools |
+| **Sandboxing** | All tool execution follows the same security model as direct tool use |
+| **Audit Trail** | All sub-agent actions are logged and visible in real-time |
+| **Access Control** | Project and user-level separation provides appropriate boundaries |
+| **Sensitive Information** | Avoid including secrets or credentials in agent configurations |
+| **Production Environments** | Consider separate agents for production vs development environments |
+
+---
+
+## Example Usage Flow
+
+```
+User: "Please write comprehensive tests for the authentication module"
+   │
+   ▼
+AI: I'll delegate this to your testing specialist sub-agent.
+   │
+   ▼
+[Delegates to "testing-expert" sub-agent]
+   │
+   ▼
+[Shows real-time progress of test creation]
+   │
+   ▼
+[Returns with completed test files and execution summary]
+   │
+   ▼
+AI: The testing-expert has created 15 test cases covering:
+    - Successful authentication
+    - Invalid credentials
+    - Token expiration
+    - Rate limiting
+    All tests pass. Files created:
+    - tests/test_auth.py
+```
+
+---
+
+## Troubleshooting
+
+### Sub-agent Not Being Used
+
+1. **Check description specificity** — Add trigger keywords like "use PROACTIVELY"
+2. **Verify agent is loaded** — Run `/agents` to list available agents
+3. **Check file location** — Ensure agent is in `.qwen/agents/` or `~/.qwen/agents/`
+4. **Validate YAML frontmatter** — Ensure proper `---` delimiters
+
+### Agent Not Working as Expected
+
+1. **Review system prompt** — Make sure instructions are clear
+2. **Check tool access** — Verify the agent has required tools configured
+3. **Test with simple task** — Start with a basic request to verify functionality
+4. **Enable debug mode** — Run `qwen --debug` to see delegation details
+
+---
+
+## Related Documentation
+
+- [Skills](./skills) — Create modular AI capabilities
+- [Commands](./commands) — Slash commands including `/agents`
+- [Tools](../../developers/tools/introduction) — Built-in tools available to agents
+- [Approval Mode](./approval-mode) — Control agent permissions
+
+---
+
+*Last updated: March 2, 2026*

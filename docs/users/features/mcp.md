@@ -1,82 +1,84 @@
-# Connect Qwen Code to tools via MCP
+# Model Context Protocol (MCP)
 
-Qwen Code can connect to external tools and data sources through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction). MCP servers give Qwen Code access to your tools, databases, and APIs.
+## What is MCP?
 
-## What you can do with MCP
+**Model Context Protocol (MCP)** is a protocol that allows Qwen Code to connect to external tools and data sources. MCP servers give Qwen Code access to your tools, databases, and APIs.
+
+### What You Can Do with MCP
 
 With MCP servers connected, you can ask Qwen Code to:
 
-- Work with files and repos (read/search/write, depending on the tools you enable)
-- Query databases (schema inspection, queries, reporting)
-- Integrate internal services (wrap your APIs as MCP tools)
-- Automate workflows (repeatable tasks exposed as tools/prompts)
+| Capability | Examples |
+|------------|----------|
+| **Work with files and repos** | Read/search/write depending on enabled tools |
+| **Query databases** | Schema inspection, queries, reporting |
+| **Integrate internal services** | Wrap your APIs as MCP tools |
+| **Automate workflows** | Repeatable tasks exposed as tools/prompts |
+| **Connect external services** | Google Drive, Figma, Slack, Jira, GitHub |
 
-> [!tip]
->
-> If you're looking for the "one command to get started", jump to [Quick start](#quick-start).
+---
 
-## Quick start
+## Quick Start
 
-Qwen Code loads MCP servers from `mcpServers` in your `settings.json`. You can configure servers either:
+### Add Your First Server
 
-- By editing `settings.json` directly
-- By using `qwen mcp` commands (see [CLI reference](#qwen-mcp-cli))
+1. **Add a server** (example: remote HTTP MCP server):
+   ```bash
+   qwen mcp add --transport http my-server http://localhost:3000/mcp
+   ```
 
-### Add your first server
+2. **Verify it shows up**:
+   ```bash
+   qwen mcp list
+   ```
 
-1. Add a server (example: remote HTTP MCP server):
+3. **Restart Qwen Code** in the same project, then ask the model to use tools from that server.
+
+### View Configured Servers
 
 ```bash
-qwen mcp add --transport http my-server http://localhost:3000/mcp
-```
-
-2. Verify it shows up:
-
-```bash
+# List all MCP servers
 qwen mcp list
+
+# Show server details
+qwen mcp desc <server-name>
 ```
 
-3. Restart Qwen Code in the same project (or start it if it wasn't running yet), then ask the model to use tools from that server.
+---
 
-## Where configuration is stored (scopes)
+## Configuration
 
-Most users only need these two scopes:
+### Where Configuration is Stored (Scopes)
 
-- **Project scope (default)**: `.qwen/settings.json` in your project root
-- **User scope**: `~/.qwen/settings.json` across all projects on your machine
+| Scope | Location | Description |
+|-------|----------|-------------|
+| **Project** (default) | `.qwen/settings.json` | In your project root — shared with team |
+| **User** | `~/.qwen/settings.json` | Across all projects on your machine |
 
-Write to user scope:
-
+**Write to user scope:**
 ```bash
 qwen mcp add --scope user --transport http my-server http://localhost:3000/mcp
 ```
 
-> [!tip]
->
-> For advanced configuration layers (system defaults/system settings and precedence rules), see [Settings](../configuration/settings).
+### Choose a Transport
 
-## Configure servers
+| Transport | When to Use | JSON Field(s) |
+|-----------|-------------|---------------|
+| **http** | Recommended for remote services; works well for cloud MCP servers | `httpUrl` (+ optional `headers`) |
+| **sse** | Legacy/deprecated servers that only support Server-Sent Events | `url` (+ optional `headers`) |
+| **stdio** | Local process (scripts, CLIs, Docker) on your machine | `command`, `args` (+ optional `cwd`, `env`) |
 
-### Choose a transport
+> **Note:** If a server supports both, prefer HTTP over SSE.
 
-| Transport | When to use                                                       | JSON field(s)                               |
-| --------- | ----------------------------------------------------------------- | ------------------------------------------- |
-| `http`    | Recommended for remote services; works well for cloud MCP servers | `httpUrl` (+ optional `headers`)            |
-| `sse`     | Legacy/deprecated servers that only support Server-Sent Events    | `url` (+ optional `headers`)                |
-| `stdio`   | Local process (scripts, CLIs, Docker) on your machine             | `command`, `args` (+ optional `cwd`, `env`) |
+---
 
-> [!note]
->
-> If a server supports both, prefer **HTTP** over **SSE**.
+## Server Configuration Examples
 
-### Configure via `settings.json` vs `qwen mcp add`
+### Stdio Server (Local Process)
 
-Both approaches produce the same `mcpServers` entries in your `settings.json`—use whichever you prefer.
+Run a local Python MCP server:
 
-#### Stdio server (local process)
-
-JSON (`.qwen/settings.json`):
-
+**JSON** (`.qwen/settings.json`):
 ```json
 {
   "mcpServers": {
@@ -94,17 +96,20 @@ JSON (`.qwen/settings.json`):
 }
 ```
 
-CLI (writes to project scope by default):
-
+**CLI**:
 ```bash
-qwen mcp add pythonTools -e DATABASE_URL=$DB_CONNECTION_STRING -e API_KEY=$EXTERNAL_API_KEY \
-  --timeout 15000 python -m my_mcp_server --port 8080
+qwen mcp add pythonTools \
+  -e DATABASE_URL=$DB_CONNECTION_STRING \
+  -e API_KEY=$EXTERNAL_API_KEY \
+  --timeout 15000 \
+  python -m my_mcp_server --port 8080
 ```
 
-#### HTTP server (remote streamable HTTP)
+### HTTP Server (Remote Streamable HTTP)
 
-JSON:
+Connect to a remote HTTP MCP server with authentication:
 
+**JSON**:
 ```json
 {
   "mcpServers": {
@@ -119,17 +124,19 @@ JSON:
 }
 ```
 
-CLI:
-
+**CLI**:
 ```bash
-qwen mcp add --transport http httpServerWithAuth http://localhost:3000/mcp \
-  --header "Authorization: Bearer your-api-token" --timeout 5000
+qwen mcp add --transport http httpServerWithAuth \
+  http://localhost:3000/mcp \
+  --header "Authorization: Bearer your-api-token" \
+  --timeout 5000
 ```
 
-#### SSE server (remote Server-Sent Events)
+### SSE Server (Remote Server-Sent Events)
 
-JSON:
+Connect to a legacy SSE-based MCP server:
 
+**JSON**:
 ```json
 {
   "mcpServers": {
@@ -141,24 +148,64 @@ JSON:
 }
 ```
 
-CLI:
-
+**CLI**:
 ```bash
-qwen mcp add --transport sse sseServer http://localhost:8080/sse --timeout 30000
+qwen mcp add --transport sse sseServer \
+  http://localhost:8080/sse \
+  --timeout 30000
 ```
 
-## Safety and control
+### Docker-based MCP Server
 
-### Trust (skip confirmations)
+Run an MCP server in a Docker container:
 
-- **Server trust** (`trust: true`): bypasses confirmation prompts for that server (use sparingly).
+**JSON**:
+```json
+{
+  "mcpServers": {
+    "dockerServer": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "my-mcp-image:latest"],
+      "env": {
+        "API_KEY": "${DOCKER_MCP_API_KEY}"
+      }
+    }
+  }
+}
+```
 
-### Tool filtering (allow/deny tools per server)
+---
 
-Use `includeTools` / `excludeTools` to restrict tools exposed by a server (from Qwen Code's perspective).
+## Safety and Control
 
-Example: include only a few tools:
+### Trust (Skip Confirmations)
 
+By default, Qwen Code asks for confirmation before using MCP tools. To bypass confirmations for trusted servers:
+
+**JSON**:
+```json
+{
+  "mcpServers": {
+    "trustedServer": {
+      "httpUrl": "http://localhost:3000/mcp",
+      "trust": true
+    }
+  }
+}
+```
+
+**CLI**:
+```bash
+qwen mcp add --trust trustedServer http://localhost:3000/mcp
+```
+
+> ⚠️ **Warning:** Only use `trust: true` for servers you fully control and trust.
+
+### Tool Filtering (Allow/Deny Tools Per Server)
+
+Restrict which tools an MCP server exposes:
+
+**JSON**:
 ```json
 {
   "mcpServers": {
@@ -172,40 +219,39 @@ Example: include only a few tools:
 }
 ```
 
-### Global allow/deny lists
+**CLI**:
+```bash
+qwen mcp add filteredServer \
+  python -m my_mcp_server \
+  --include-tools "safe_tool,file_reader,data_processor"
+```
 
-The `mcp` object in your `settings.json` defines global rules for all MCP servers:
+| Property | Description |
+|----------|-------------|
+| `includeTools` | Allowlist — only these tools are exposed |
+| `excludeTools` | Denylist — these tools are hidden (takes precedence over includeTools) |
 
-- `mcp.allowed`: allow-list of MCP server names (keys in `mcpServers`)
-- `mcp.excluded`: deny-list of MCP server names
+### Global Allow/Deny Lists
 
-Example:
+Define global rules for all MCP servers:
 
+**JSON**:
 ```json
 {
   "mcp": {
-    "allowed": ["my-trusted-server"],
-    "excluded": ["experimental-server"]
+    "allowed": ["my-trusted-server", "internal-tools"],
+    "excluded": ["experimental-server", "deprecated-server"]
   }
 }
 ```
 
-## Troubleshooting
-
-- **Server shows "Disconnected" in `qwen mcp list`**: verify the URL/command is correct, then increase `timeout`.
-- **Stdio server fails to start**: use an absolute `command` path, and double-check `cwd`/`env`.
-- **Environment variables in JSON don't resolve**: ensure they exist in the environment where Qwen Code runs (shell vs GUI app environments can differ).
+---
 
 ## Reference
 
-### `settings.json` structure
-
-#### Server-specific configuration (`mcpServers`)
-
-Add an `mcpServers` object to your `settings.json` file:
+### settings.json Structure
 
 ```json
-// ... file contains other config objects
 {
   "mcpServers": {
     "serverName": {
@@ -216,72 +262,187 @@ Add an `mcpServers` object to your `settings.json` file:
       },
       "cwd": "./server-directory",
       "timeout": 30000,
-      "trust": false
+      "trust": false,
+      "description": "Human-readable description",
+      "includeTools": ["tool1", "tool2"],
+      "excludeTools": ["dangerous_tool"]
     }
   }
 }
 ```
 
-Configuration properties:
+### Server Configuration Properties
 
-Required (one of the following):
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `command` | string | — | Path to executable for Stdio transport (required if using stdio) |
+| `url` | string | — | SSE endpoint URL (required if using SSE) |
+| `httpUrl` | string | — | HTTP streaming endpoint URL (required if using HTTP) |
+| `args` | array | `[]` | Command-line arguments for Stdio transport |
+| `headers` | object | `{}` | Custom HTTP headers for URL/HTTP transports |
+| `env` | object | `{}` | Environment variables (supports `$VAR` or `${VAR}` syntax) |
+| `cwd` | string | — | Working directory for Stdio transport |
+| `timeout` | number | `600000` | Request timeout in milliseconds (10 min) |
+| `trust` | boolean | `false` | Bypasses all tool call confirmations |
+| `description` | string | — | Brief description for display |
+| `includeTools` | array | — | Allowlist of tool names from this server |
+| `excludeTools` | array | — | Denylist of tool names (takes precedence over includeTools) |
 
-| Property  | Description                                            |
-| --------- | ------------------------------------------------------ |
-| `command` | Path to the executable for Stdio transport             |
-| `url`     | SSE endpoint URL (e.g., `"http://localhost:8080/sse"`) |
-| `httpUrl` | HTTP streaming endpoint URL                            |
+---
 
-Optional:
+## CLI Reference: `qwen mcp`
 
-| Property               | Type/Default                 | Description                                                                                                                                                                                                                                                       |
-| ---------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `args`                 | array                        | Command-line arguments for Stdio transport                                                                                                                                                                                                                        |
-| `headers`              | object                       | Custom HTTP headers when using `url` or `httpUrl`                                                                                                                                                                                                                 |
-| `env`                  | object                       | Environment variables for the server process. Values can reference environment variables using `$VAR_NAME` or `${VAR_NAME}` syntax                                                                                                                                |
-| `cwd`                  | string                       | Working directory for Stdio transport                                                                                                                                                                                                                             |
-| `timeout`              | number<br>(default: 600,000) | Request timeout in milliseconds (default: 600,000ms = 10 minutes)                                                                                                                                                                                                 |
-| `trust`                | boolean<br>(default: false)  | When `true`, bypasses all tool call confirmations for this server (default: `false`)                                                                                                                                                                              |
-| `includeTools`         | array                        | List of tool names to include from this MCP server. When specified, only the tools listed here will be available from this server (allowlist behavior). If not specified, all tools from the server are enabled by default.                                       |
-| `excludeTools`         | array                        | List of tool names to exclude from this MCP server. Tools listed here will not be available to the model, even if they are exposed by the server.<br>Note: `excludeTools` takes precedence over `includeTools` - if a tool is in both lists, it will be excluded. |
-| `targetAudience`       | string                       | The OAuth Client ID allowlisted on the IAP-protected application you are trying to access. Used with `authProviderType: 'service_account_impersonation'`.                                                                                                         |
-| `targetServiceAccount` | string                       | The email address of the Google Cloud Service Account to impersonate. Used with `authProviderType: 'service_account_impersonation'`.                                                                                                                              |
-
-<a id="qwen-mcp-cli"></a>
-
-### Manage MCP servers with `qwen mcp`
-
-You can always configure MCP servers by manually editing `settings.json`, but the CLI is usually faster.
-
-#### Adding a server (`qwen mcp add`)
-
+### Adding a Server
 ```bash
 qwen mcp add [options] <name> <commandOrUrl> [args...]
 ```
 
-| Argument/Option     | Description                                                         | Default            | Example                                   |
-| ------------------- | ------------------------------------------------------------------- | ------------------ | ----------------------------------------- |
-| `<name>`            | A unique name for the server.                                       | —                  | `example-server`                          |
-| `<commandOrUrl>`    | The command to execute (for `stdio`) or the URL (for `http`/`sse`). | —                  | `/usr/bin/python` or `http://localhost:8` |
-| `[args...]`         | Optional arguments for a `stdio` command.                           | —                  | `--port 5000`                             |
-| `-s`, `--scope`     | Configuration scope (user or project).                              | `project`          | `-s user`                                 |
-| `-t`, `--transport` | Transport type (`stdio`, `sse`, `http`).                            | `stdio`            | `-t sse`                                  |
-| `-e`, `--env`       | Set environment variables.                                          | —                  | `-e KEY=value`                            |
-| `-H`, `--header`    | Set HTTP headers for SSE and HTTP transports.                       | —                  | `-H "X-Api-Key: abc123"`                  |
-| `--timeout`         | Set connection timeout in milliseconds.                             | —                  | `--timeout 30000`                         |
-| `--trust`           | Trust the server (bypass all tool call confirmation prompts).       | — (`false`)        | `--trust`                                 |
-| `--description`     | Set the description for the server.                                 | —                  | `--description "Local tools"`             |
-| `--include-tools`   | A comma-separated list of tools to include.                         | all tools included | `--include-tools mytool,othertool`        |
-| `--exclude-tools`   | A comma-separated list of tools to exclude.                         | none               | `--exclude-tools mytool`                  |
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-s, --scope` | Configuration scope (`user` or `project`) | `project` |
+| `-t, --transport` | Transport type (`stdio`, `sse`, `http`) | `stdio` |
+| `-e, --env` | Set environment variables (can be repeated) | — |
+| `-H, --header` | Set HTTP headers for SSE/HTTP (can be repeated) | — |
+| `--timeout` | Connection timeout in milliseconds | `600000` |
+| `--trust` | Trust the server (skip confirmations) | `false` |
+| `--description` | Set server description | — |
+| `--include-tools` | Comma-separated tools to include | all |
+| `--exclude-tools` | Comma-separated tools to exclude | none |
 
-#### Listing servers (`qwen mcp list`)
-
+### Listing Servers
 ```bash
 qwen mcp list
 ```
 
-#### Removing a server (`qwen mcp remove`)
-
+### Removing a Server
 ```bash
-qwen mcp remove <name>
+qwen mcp remove <server-name>
 ```
+
+### Viewing Server Details
+```bash
+qwen mcp desc <server-name>
+```
+
+---
+
+## Popular MCP Servers
+
+### Filesystem Server
+Access files outside the current project:
+```bash
+qwen mcp add filesystem npx -y @modelcontextprotocol/server-filesystem /path/to/allowed/files
+```
+
+### GitHub Server
+Interact with GitHub repositories:
+```bash
+qwen mcp add --transport http github https://api.github.com \
+  --header "Authorization: Bearer $GITHUB_TOKEN"
+```
+
+### Database Server
+Query PostgreSQL databases:
+```bash
+qwen mcp add postgres npx -y @modelcontextprotocol/server-postgres \
+  -e DATABASE_URL="postgresql://user:pass@localhost:5432/mydb"
+```
+
+### Slack Server
+Send messages and read channels:
+```bash
+qwen mcp add slack npx -y @modelcontextprotocol/server-slack \
+  -e SLACK_BOT_TOKEN="xoxb-..."
+```
+
+### Google Drive Server
+Access Google Drive files:
+```bash
+qwen mcp add gdrive npx -y @modelcontextprotocol/server-gdrive \
+  -e GOOGLE_APPLICATION_CREDENTIALS="~/.gcp/credentials.json"
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Server shows "Disconnected" | Verify URL/command is correct; increase `timeout` |
+| Stdio server fails to start | Use absolute command path; check `cwd`/`env` |
+| Environment variables don't resolve | Ensure they exist where Qwen Code runs (shell vs GUI environments differ) |
+| Tools not appearing | Check `includeTools`/`excludeTools` settings; verify server exposes tools |
+| Connection timeout | Increase `timeout` value; check network/firewall |
+| Authentication fails | Verify headers contain correct tokens; check token expiration |
+
+### Debug Mode
+
+Enable debug logging to diagnose MCP issues:
+```bash
+qwen --debug
+```
+
+Check logs for MCP connection details and error messages.
+
+---
+
+## Best Practices
+
+### 1. Use Project Scope for Team Servers
+```bash
+qwen mcp add --scope project internal-api http://internal.company.com/mcp
+```
+This shares the configuration with your team via `.qwen/settings.json`.
+
+### 2. Use User Scope for Personal Servers
+```bash
+qwen mcp add --scope user personal-tools http://localhost:4000/mcp
+```
+Keep personal tools separate from project configuration.
+
+### 3. Limit Tool Access
+```json
+{
+  "mcpServers": {
+    "readonly-db": {
+      "command": "python",
+      "args": ["-m", "db_server", "--readonly"],
+      "includeTools": ["query", "schema"]
+    }
+  }
+}
+```
+
+### 4. Use Environment Variables for Secrets
+```json
+{
+  "mcpServers": {
+    "secure-server": {
+      "httpUrl": "https://api.company.com/mcp",
+      "headers": {
+        "Authorization": "Bearer $MCP_API_TOKEN"
+      }
+    }
+  }
+}
+```
+
+Store actual values in `.qwen/.env` (gitignored).
+
+### 5. Set Appropriate Timeouts
+- Local servers: `5000-15000` ms
+- Remote servers: `30000-60000` ms
+- Slow operations: `120000+` ms
+
+---
+
+## Related Documentation
+
+- [Skills](./skills) — Create custom AI capabilities
+- [Sub-Agents](./sub-agents) — Specialized AI assistants
+- [Configuration](../configuration/settings) — All settings reference
+- [Tools](../../developers/tools/introduction) — Built-in tools
+
+---
+
+*Last updated: March 2, 2026*

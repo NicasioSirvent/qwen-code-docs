@@ -1,283 +1,389 @@
 # Headless Mode
 
-Headless mode allows you to run Qwen Code programmatically from command line
-scripts and automation tools without any interactive UI. This is ideal for
-scripting, automation, CI/CD pipelines, and building AI-powered tools.
-
 ## Overview
 
-The headless mode provides a headless interface to Qwen Code that:
+**Headless Mode** enables non-interactive, scriptable usage of Qwen Code. It's designed for automation, CI/CD pipelines, and batch processing where terminal interaction is not required.
 
-- Accepts prompts via command line arguments or stdin
-- Returns structured output (text or JSON)
-- Supports file redirection and piping
-- Enables automation and scripting workflows
-- Provides consistent exit codes for error handling
-- Can resume previous sessions scoped to the current project for multi-step automation
+---
 
-## Basic Usage
+## Quick Start
 
-### Direct Prompts
+### Basic Usage
 
-Use the `--prompt` (or `-p`) flag to run in headless mode:
-
+Run a single prompt and exit:
 ```bash
-qwen --prompt "What is machine learning?"
+qwen --prompt "What does this project do?"
 ```
 
-### Stdin Input
-
-Pipe input to Qwen Code from your terminal:
-
+Shorthand:
 ```bash
-echo "Explain this code" | qwen
+qwen -p "Explain the main architecture"
 ```
 
-### Combining with File Input
+### With Output Format
 
-Read from files and process with Qwen Code:
-
+Get structured JSON output:
 ```bash
-cat README.md | qwen --prompt "Summarize this documentation"
+qwen -p "List all API endpoints" --output-format json
 ```
 
-### Resume Previous Sessions (Headless)
+---
 
-Reuse conversation context from the current project in headless scripts:
+## Command-Line Options
 
-```bash
-# Continue the most recent session for this project and run a new prompt
-qwen --continue -p "Run the tests again and summarize failures"
+### Core Options
 
-# Resume a specific session ID directly (no UI)
-qwen --resume 123e4567-e89b-12d3-a456-426614174000 -p "Apply the follow-up refactor"
-```
+| Option | Alias | Description | Example |
+|--------|-------|-------------|---------|
+| `--prompt` | `-p` | Run a single prompt and exit | `qwen -p "analyze this"` |
+| `--prompt-interactive` | `-i` | Start interactive session with initial prompt | `qwen -i "fix bugs"` |
+| `--output-format` | `-o` | Output format | `text`, `json`, `stream-json` |
+| `--input-format` | — | Input format | `text`, `stream-json` |
+| `--model` | `-m` | Specify model for session | `qwen -m qwen3-coder-plus` |
+| `--approval-mode` | — | Set approval mode | `plan`, `default`, `auto-edit`, `yolo` |
+| `--yolo` | — | Auto-approve all tool calls | `qwen --yolo -p "fix tests"` |
 
-> [!note]
->
-> - Session data is project-scoped JSONL under `~/.qwen/projects/<sanitized-cwd>/chats`.
-> - Restores conversation history, tool outputs, and chat-compression checkpoints before sending the new prompt.
+### Advanced Options
+
+| Option | Description |
+|--------|-------------|
+| `--sandbox` | Enable sandbox mode for command execution |
+| `--sandbox-image` | Set sandbox container image URI |
+| `--debug` | Enable verbose debug logging |
+| `--all-files` | Include all files recursively in context |
+| `--include-directories` | Include additional directories in context |
+| `--extensions` | Specify extensions to load |
+| `--telemetry` | Enable telemetry collection |
+
+---
 
 ## Output Formats
 
-Qwen Code supports multiple output formats for different use cases:
+### Text Format (Default)
 
-### Text Output (Default)
-
-Standard human-readable output:
-
+Human-readable text output:
 ```bash
-qwen -p "What is the capital of France?"
+qwen -p "What testing framework does this project use?"
 ```
 
-Response format:
-
+Output:
 ```
-The capital of France is Paris.
+This project uses Jest as its testing framework. I can see this from:
+
+1. package.json lists "jest": "^29.0.0" as a devDependency
+2. jest.config.js configuration file in the root
+3. Test files follow the *.test.ts naming convention
 ```
 
-### JSON Output
+### JSON Format
 
-Returns structured data as a JSON array. All messages are buffered and output together when the session completes. This format is ideal for programmatic processing and automation scripts.
-
-The JSON output is an array of message objects. The output includes multiple message types: system messages (session initialization), assistant messages (AI responses), and result messages (execution summary).
-
-#### Example Usage
-
+Structured JSON output for programmatic processing:
 ```bash
-qwen -p "What is the capital of France?" --output-format json
+qwen -p "List all dependencies" -o json
 ```
 
-Output (at end of execution):
-
+Output:
 ```json
-[
-  {
-    "type": "system",
-    "subtype": "session_start",
-    "uuid": "...",
-    "session_id": "...",
-    "model": "qwen3-coder-plus",
-    ...
-  },
-  {
-    "type": "assistant",
-    "uuid": "...",
-    "session_id": "...",
-    "message": {
-      "id": "...",
-      "type": "message",
-      "role": "assistant",
-      "model": "qwen3-coder-plus",
-      "content": [
-        {
-          "type": "text",
-          "text": "The capital of France is Paris."
-        }
-      ],
-      "usage": {...}
-    },
-    "parent_tool_use_id": null
-  },
-  {
-    "type": "result",
-    "subtype": "success",
-    "uuid": "...",
-    "session_id": "...",
-    "is_error": false,
-    "duration_ms": 1234,
-    "result": "The capital of France is Paris.",
-    "usage": {...}
-  }
-]
+{
+  "type": "final_response",
+  "content": "This project has the following dependencies:\n\n**Production:**\n- express: ^4.18.0\n- lodash: ^4.17.21\n\n**Development:**\n- jest: ^29.0.0\n- typescript: ^5.0.0",
+  "model": "qwen3-coder-plus",
+  "turns": 1
+}
 ```
 
-### Stream-JSON Output
+### Stream JSON Format
 
-Stream-JSON format emits JSON messages immediately as they occur during execution, enabling real-time monitoring. This format uses line-delimited JSON where each message is a complete JSON object on a single line.
-
+Real-time streaming output for live processing:
 ```bash
-qwen -p "Explain TypeScript" --output-format stream-json
+qwen -p "Generate a report" -o stream-json --include-partial-messages
 ```
 
-Output (streaming as events occur):
+Useful for:
+- Building custom UIs
+- Real-time logging
+- Progress tracking
 
-```json
-{"type":"system","subtype":"session_start","uuid":"...","session_id":"..."}
-{"type":"assistant","uuid":"...","session_id":"...","message":{...}}
-{"type":"result","subtype":"success","uuid":"...","session_id":"..."}
+---
+
+## Use Cases
+
+### 1. CI/CD Automation
+
+**GitHub Actions Example:**
+```yaml
+name: Code Review
+on: [pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Qwen Code
+        run: npm install -g @qwen-code/qwen-code
+      
+      - name: Run Code Review
+        env:
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+        run: |
+          qwen -p "Review this PR for security issues and best practices" \
+            --approval-mode yolo \
+            -o json > review-output.json
+      
+      - name: Upload Review Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-review
+          path: review-output.json
 ```
 
-When combined with `--include-partial-messages`, additional stream events are emitted in real-time (message_start, content_block_delta, etc.) for real-time UI updates.
+### 2. Automated Testing
 
+Run tests and auto-fix failures:
 ```bash
-qwen -p "Write a Python script" --output-format stream-json --include-partial-messages
+#!/bin/bash
+
+# Run tests and fix failures
+qwen --yolo -p "
+  Run the test suite. If any tests fail, analyze the failures 
+  and fix the issues. Continue until all tests pass.
+" --output-format json > test-results.json
 ```
 
-### Input Format
+### 3. Batch Processing
 
-The `--input-format` parameter controls how Qwen Code consumes input from standard input:
-
-- **`text`** (default): Standard text input from stdin or command-line arguments
-- **`stream-json`**: JSON message protocol via stdin for bidirectional communication
-
-> **Note:** Stream-json input mode is currently under construction and is intended for SDK integration. It requires `--output-format stream-json` to be set.
-
-### File Redirection
-
-Save output to files or pipe to other commands:
-
+Process multiple files or projects:
 ```bash
-# Save to file
-qwen -p "Explain Docker" > docker-explanation.txt
-qwen -p "Explain Docker" --output-format json > docker-explanation.json
+#!/bin/bash
 
-# Append to file
-qwen -p "Add more details" >> docker-explanation.txt
-
-# Pipe to other tools
-qwen -p "What is Kubernetes?" --output-format json | jq '.response'
-qwen -p "Explain microservices" | wc -w
-qwen -p "List programming languages" | grep -i "python"
-
-# Stream-JSON output for real-time processing
-qwen -p "Explain Docker" --output-format stream-json | jq '.type'
-qwen -p "Write code" --output-format stream-json --include-partial-messages | jq '.event.type'
-```
-
-## Configuration Options
-
-Key command-line options for headless usage:
-
-| Option                       | Description                                             | Example                                                                  |
-| ---------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `--prompt`, `-p`             | Run in headless mode                                    | `qwen -p "query"`                                                        |
-| `--output-format`, `-o`      | Specify output format (text, json, stream-json)         | `qwen -p "query" --output-format json`                                   |
-| `--input-format`             | Specify input format (text, stream-json)                | `qwen --input-format text --output-format stream-json`                   |
-| `--include-partial-messages` | Include partial messages in stream-json output          | `qwen -p "query" --output-format stream-json --include-partial-messages` |
-| `--debug`, `-d`              | Enable debug mode                                       | `qwen -p "query" --debug`                                                |
-| `--all-files`, `-a`          | Include all files in context                            | `qwen -p "query" --all-files`                                            |
-| `--include-directories`      | Include additional directories                          | `qwen -p "query" --include-directories src,docs`                         |
-| `--yolo`, `-y`               | Auto-approve all actions                                | `qwen -p "query" --yolo`                                                 |
-| `--approval-mode`            | Set approval mode                                       | `qwen -p "query" --approval-mode auto_edit`                              |
-| `--continue`                 | Resume the most recent session for this project         | `qwen --continue -p "Pick up where we left off"`                         |
-| `--resume [sessionId]`       | Resume a specific session (or choose interactively)     | `qwen --resume 123e... -p "Finish the refactor"`                         |
-| `--experimental-skills`      | Enable experimental Skills (registers the `skill` tool) | `qwen --experimental-skills -p "What Skills are available?"`             |
-
-For complete details on all available configuration options, settings files, and environment variables, see the [Configuration Guide](../configuration/settings).
-
-## Examples
-
-### Code review
-
-```bash
-cat src/auth.py | qwen -p "Review this authentication code for security issues" > security-review.txt
-```
-
-### Generate commit messages
-
-```bash
-result=$(git diff --cached | qwen -p "Write a concise commit message for these changes" --output-format json)
-echo "$result" | jq -r '.response'
-```
-
-### API documentation
-
-```bash
-result=$(cat api/routes.js | qwen -p "Generate OpenAPI spec for these routes" --output-format json)
-echo "$result" | jq -r '.response' > openapi.json
-```
-
-### Batch code analysis
-
-```bash
-for file in src/*.py; do
-    echo "Analyzing $file..."
-    result=$(cat "$file" | qwen -p "Find potential bugs and suggest improvements" --output-format json)
-    echo "$result" | jq -r '.response' > "reports/$(basename "$file").analysis"
-    echo "Completed analysis for $(basename "$file")" >> reports/progress.log
+for project in projects/*/; do
+  echo "Processing $project..."
+  cd "$project"
+  
+  qwen -p "Generate documentation for this project" \
+    --approval-mode plan \
+    -o json > docs-output.json
+  
+  cd ..
 done
 ```
 
-### PR code review
+### 4. Log Analysis
 
+Pipe logs to Qwen Code for analysis:
 ```bash
-result=$(git diff origin/main...HEAD | qwen -p "Review these changes for bugs, security issues, and code quality" --output-format json)
-echo "$result" | jq -r '.response' > pr-review.json
+# Analyze application logs
+tail -f app.log | qwen -p "
+  Monitor this log stream. Alert me if you see any errors, 
+  exceptions, or unusual patterns.
+"
 ```
 
-### Log analysis
+### 5. Code Generation Pipeline
 
 ```bash
-grep "ERROR" /var/log/app.log | tail -20 | qwen -p "Analyze these errors and suggest root cause and fixes" > error-analysis.txt
+#!/bin/bash
+
+# Generate code from specifications
+qwen -p "
+  Read specs/api-spec.yaml and generate:
+  1. TypeScript interfaces
+  2. API route handlers
+  3. Unit test stubs
+  
+  Save all files in the appropriate directories.
+" --approval-mode auto-edit
 ```
 
-### Release notes generation
+---
+
+## Integration Examples
+
+### Shell Script Integration
 
 ```bash
-result=$(git log --oneline v1.0.0..HEAD | qwen -p "Generate release notes from these commits" --output-format json)
-response=$(echo "$result" | jq -r '.response')
-echo "$response"
-echo "$response" >> CHANGELOG.md
+#!/bin/bash
+
+# Daily code health check
+echo "Running daily code health check..."
+
+# Check for code smells
+qwen -p "Analyze this codebase for code smells and technical debt" \
+  --approval-mode plan \
+  -o json > health-report.json
+
+# Extract summary
+jq '.content' health-report.json
+
+# Notify team (example with curl)
+curl -X POST "$SLACK_WEBHOOK" \
+  -H "Content-Type: application/json" \
+  -d "{\"text\": \"Daily health check: $(cat health-report.json)\"}"
 ```
 
-### Model and tool usage tracking
+### Makefile Integration
+
+```makefile
+.PHONY: review docs test
+
+review:
+	qwen -p "Review all changed files for best practices" \
+		--approval-mode plan \
+		-o json > review.json
+
+docs:
+	qwen -p "Generate API documentation from source code" \
+		--approval-mode auto-edit
+
+test:
+	qwen -p "Run tests and fix any failures" \
+		--yolo \
+		-o json > test-results.json
+```
+
+### Node.js Script Integration
+
+```javascript
+const { execSync } = require('child_process');
+const fs = require('fs');
+
+function runQwenCode(prompt, options = {}) {
+  const args = [
+    '-p', `"${prompt}"`,
+    '--output-format', 'json',
+    options.approvalMode ? `--approval-mode ${options.approvalMode}` : '',
+    options.yolo ? '--yolo' : ''
+  ].filter(Boolean).join(' ');
+  
+  const output = execSync(`qwen ${args}`, {
+    encoding: 'utf-8',
+    cwd: options.cwd || process.cwd()
+  });
+  
+  return JSON.parse(output);
+}
+
+// Usage
+const result = runQwenCode('Generate unit tests for src/auth.ts', {
+  approvalMode: 'auto-edit',
+  cwd: '/path/to/project'
+});
+
+console.log(result.content);
+```
+
+---
+
+## Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `QWEN_API_KEY` | API key for authentication | `export QWEN_API_KEY="sk-..."` |
+| `QWEN_CODE` | Set to `1` when running in Qwen Code context | Auto-set for `!` commands |
+| `DEBUG` | Enable debug logging | `export DEBUG=true` |
+| `NO_COLOR` | Disable colored output | `export NO_COLOR=1` |
+
+---
+
+## Exit Codes
+
+| Code | Description |
+|------|-------------|
+| `0` | Success |
+| `1` | General error |
+| `2` | Invalid arguments |
+| `3` | Authentication failed |
+| `4` | Network error |
+| `5` | Tool execution failed |
+
+---
+
+## Best Practices
+
+### 1. Use Appropriate Approval Modes
+
+| Scenario | Recommended Mode |
+|----------|-----------------|
+| Analysis only | `plan` |
+| CI/CD (trusted) | `yolo` |
+| Code generation | `auto-edit` |
+| Review workflows | `default` |
+
+### 2. Handle Output Programmatically
 
 ```bash
-result=$(qwen -p "Explain this database schema" --include-directories db --output-format json)
-total_tokens=$(echo "$result" | jq -r '.stats.models // {} | to_entries | map(.value.tokens.total) | add // 0')
-models_used=$(echo "$result" | jq -r '.stats.models // {} | keys | join(", ") | if . == "" then "none" else . end')
-tool_calls=$(echo "$result" | jq -r '.stats.tools.totalCalls // 0')
-tools_used=$(echo "$result" | jq -r '.stats.tools.byName // {} | keys | join(", ") | if . == "" then "none" else . end')
-echo "$(date): $total_tokens tokens, $tool_calls tool calls ($tools_used) used with models: $models_used" >> usage.log
-echo "$result" | jq -r '.response' > schema-docs.md
-echo "Recent usage trends:"
-tail -5 usage.log
+# Parse JSON output
+qwen -p "List all TODO comments" -o json | jq '.content'
+
+# Check for errors
+if qwen -p "fix bugs" --yolo; then
+  echo "Success!"
+else
+  echo "Failed with exit code: $?"
+fi
 ```
 
-## Resources
+### 3. Set Timeouts for Long Operations
 
-- [CLI Configuration](../configuration/settings#command-line-arguments) - Complete configuration guide
-- [Authentication](../configuration/settings#environment-variables-for-api-access) - Setup authentication
-- [Commands](../features/commands) - Interactive commands reference
-- [Tutorials](../quickstart) - Step-by-step automation guides
+```bash
+# Timeout after 10 minutes
+timeout 600 qwen -p "Refactor the entire codebase" --yolo
+```
+
+### 4. Use Sandboxing for Untrusted Code
+
+```bash
+# Run in Docker sandbox
+qwen -p "Execute this untrusted code" --sandbox --sandbox-image qwen-code-sandbox
+```
+
+### 5. Log Everything for Debugging
+
+```bash
+# Enable debug logging
+qwen -p "Complex operation" --debug 2>&1 | tee operation.log
+```
+
+---
+
+## Troubleshooting
+
+### Command Hangs
+
+1. **Check approval mode**: Interactive approval may be waiting
+2. **Use --yolo**: For full automation
+3. **Set timeout**: `timeout 300 qwen ...`
+
+### Output Not JSON
+
+1. **Verify flag**: Use `--output-format json`
+2. **Check for errors**: Error messages may be printed to stderr
+
+### Authentication Issues
+
+1. **Set API key**: `export QWEN_API_KEY="..."`
+2. **Check credentials**: Run `qwen /auth` interactively first
+
+### Memory Issues
+
+For large projects:
+```bash
+# Increase Node.js memory
+export NODE_OPTIONS="--max-old-space-size=4096"
+qwen -p "Analyze entire codebase"
+```
+
+---
+
+## Related Documentation
+
+- [Approval Mode](./approval-mode) — Control permissions in headless mode
+- [Configuration](../configuration/settings) — All settings reference
+- [Commands](./commands) — Available slash commands
+- [MCP](./mcp) — External tool integration
+
+---
+
+*Last updated: March 2, 2026*

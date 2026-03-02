@@ -2,215 +2,318 @@
 
 ## Overview
 
-Qwen Code is an open-source AI coding assistant that lives in your terminal and helps developers understand, navigate, and build code faster. Built specifically for the Qwen3-Coder model, it provides powerful agentic capabilities through a command-line interface while also offering seamless IDE integration options.
+Qwen Code is an open-source AI coding agent that lives in your terminal, helping developers understand, navigate, and build code faster. Built specifically for the Qwen3-Coder model family, it provides powerful agentic capabilities through a command-line interface while also offering seamless IDE integration options.
 
 Qwen Code transforms how you interact with your codebase by providing intelligent assistance that goes beyond simple code completion. It combines deep codebase understanding with practical action-taking capabilities to accelerate your development workflow.
 
-## Get started in 30 seconds
+## Get Started in 30 Seconds
 
-Prerequisites:
+### Prerequisites
 
 - A [Qwen Code](https://chat.qwen.ai/auth?mode=register) account
-- Requires [Node.js 20+](https://nodejs.org/zh-cn/download), you can use `node -v` to check the version. If it's not installed, use the following command to install it.
+- Node.js 20+ (check with `node -v`)
 
-### Install Qwen Code:
+### Installation
 
-**NPM**(recommended)
-
+**NPM** (recommended)
 ```bash
 npm install -g @qwen-code/qwen-code@latest
 ```
 
-**Homebrew**(macOS, Linux)
-
+**Homebrew** (macOS, Linux)
 ```bash
 brew install qwen-code
 ```
 
-### Start using Qwen Code:
+### Start Using Qwen Code
 
 ```bash
 cd your-project
 qwen
 ```
 
-Select **Qwen OAuth (Free)** authentication and follow the prompts to log in. Then let's start with understanding your codebase. Try one of these commands:
+Select **Qwen OAuth (Free)** authentication and follow the prompts to log in. Then start exploring your codebase:
 
 ```
 what does this project do?
+explain the main architecture
 ```
-
-![](https://cloud.video.taobao.com/vod/j7-QtQScn8UEAaEdiv619fSkk5p-t17orpDbSqKVL5A.mp4)
 
 You'll be prompted to log in on first use. That's it! [Continue with Quickstart (5 mins) →](./docs/users/quickstart)
 
 > [!tip]
->
 > See [troubleshooting](./docs/users/support/troubleshooting) if you hit issues.
 
 > [!note]
->
-> **New VS Code Extension (Beta)**: Prefer a graphical interface? Our new **VS Code extension** provides an easy-to-use native IDE experience without requiring terminal familiarity. Simply install from the marketplace and start coding with Qwen Code directly in your sidebar. Download and install the [Qwen Code Companion](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion) now.
+> **VS Code Extension (Beta)**: Prefer a graphical interface? Our **VS Code extension** provides an easy-to-use native IDE experience. Install [Qwen Code Companion](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion) from the marketplace.
 
-## What Qwen Code does for you
+---
 
-- **Build features from descriptions**: Tell Qwen Code what you want to build in plain language. It will make a plan, write the code, and ensure it works.
-- **Debug and fix issues**: Describe a bug or paste an error message. Qwen Code will analyze your codebase, identify the problem, and implement a fix.
-- **Navigate any codebase**: Ask anything about your team's codebase, and get a thoughtful answer back. Qwen Code maintains awareness of your entire project structure, can find up-to-date information from the web, and with [MCP](./docs/users/features/mcp) can pull from external datasources like Google Drive, Figma, and Slack.
-- **Automate tedious tasks**: Fix fiddly lint issues, resolve merge conflicts, and write release notes. Do all this in a single command from your developer machines, or automatically in CI.
+## What Qwen Code Does
 
-## Why developers love Qwen Code
+| Capability | Description |
+|------------|-------------|
+| **Build Features** | Tell Qwen Code what you want to build in plain language. It creates a plan, writes the code, and ensures it works. |
+| **Debug & Fix** | Describe a bug or paste an error message. Qwen Code analyzes your codebase, identifies the problem, and implements a fix. |
+| **Navigate Codebases** | Ask anything about your team's codebase. Qwen Code maintains awareness of your entire project structure. |
+| **Automate Tasks** | Fix lint issues, resolve merge conflicts, write release notes. Works locally or in CI/CD pipelines. |
 
-- **Works in your terminal**: Not another chat window. Not another IDE. Qwen Code meets you where you already work, with the tools you already love.
-- **Takes action**: Qwen Code can directly edit files, run commands, and create commits. Need more? [MCP](./docs/users/features/mcp) lets Qwen Code read your design docs in Google Drive, update your tickets in Jira, or use _your_ custom developer tooling.
-- **Unix philosophy**: Qwen Code is composable and scriptable. `tail -f app.log | qwen -p "Slack me if you see any anomalies appear in this log stream"` _works_. Your CI can run `qwen -p "If there are new text strings, translate them into French and raise a PR for @lang-fr-team to review"`.
+---
+
+## Why Developers Love Qwen Code
+
+- **Terminal-First Design**: Not another chat window. Qwen Code meets you where you already work.
+- **Takes Action**: Can edit files, run commands, and create commits. With [MCP](./docs/users/features/mcp), connect to Google Drive, Jira, Slack, and more.
+- **Unix Philosophy**: Composable and scriptable. Pipe logs: `tail -f app.log | qwen -p "Slack me if you see anomalies"`.
+- **Open Source**: Both the framework and Qwen3-Coder models are open-source (Apache 2.0).
+- **Flexible Authentication**: Qwen OAuth (2,000 free requests/day) or OpenAI-compatible API keys.
+
+---
 
 ## Key Features
 
-### Build Features from Descriptions
-Transform plain language requirements into working code by describing what you want to build. Qwen Code creates implementation plans, writes the actual code, and ensures it works through automated testing and validation. This natural-language-to-code approach dramatically reduces the time between idea and implementation.
+### 1. Agent Skills (Experimental)
 
-### Debug and Fix Issues
-Resolve bugs quickly by describing the problem or pasting error messages. Qwen Code analyzes your entire codebase to identify root causes, suggests fixes, and can even implement the solution directly with your approval. The system understands context across files and dependencies, making it effective at solving complex debugging challenges.
+**Skills** are modular capabilities that extend Qwen Code's effectiveness. Each skill packages expertise into a discoverable format.
 
-### Navigate Any Codebase
-Ask questions about your team's codebase and receive thoughtful, context-aware answers. Qwen Code maintains awareness of your entire project structure, can find up-to-date information from the web, and through Model Context Protocol (MCP) can pull from external data sources like Google Drive, databases, or custom APIs.
+| Skills vs. Slash Commands |
+|---------------------------|
+| **Skills**: Model-invoked — the AI autonomously decides when to use them |
+| **Slash Commands**: User-invoked — you explicitly type `/command` |
 
-### Automate Tedious Tasks
-Eliminate repetitive work through intelligent automation capabilities. Fix linting issues, resolve merge conflicts, write release notes, and perform other routine development tasks with a single command. These operations work on your local development machine or can be integrated into CI/CD pipelines for automated workflows.
+**Skill Locations:**
+- Personal: `~/.qwen/skills/`
+- Project: `.qwen/skills/`
+- Extensions: Provided by installed extensions
 
-## Architecture Overview
+**Example Skill Structure:**
+```
+my-skill/
+├── SKILL.md (required)
+├── reference.md (optional)
+├── scripts/helper.py (optional)
+└── templates/template.txt (optional)
+```
 
-Qwen Code is built with a modular architecture that separates user-facing concerns from core AI orchestration, enabling flexible deployment and extensibility. The system consists of two primary packages working together through a well-defined interface.
+[Learn more →](./docs/users/features/skills)
 
-The CLI package (packages/cli) handles all user interactions, including input processing, command handling, display rendering, and theme customization. It communicates with the Core package (packages/core), which manages API communication with the Qwen model, tool orchestration, and state management. The tool system provides extensible capabilities through built-in tools and MCP server integrations.
+### 2. Sub-Agents
 
-### Key Components
+**Sub-agents** are specialized AI assistants that handle specific types of tasks. They maintain separate context and can be configured with specific tools.
 
-#### Terminal-First Design
-Built for developers who live in the command line, Qwen Code integrates naturally with your existing workflow. It's not another chat window or separate IDE—it meets you where you already work with the tools you already love. The system follows Unix philosophy principles, making it composable and scriptable for seamless integration into existing pipelines.
+**Built-in Sub-agents:**
+- Testing Specialist — writes comprehensive unit/integration tests
+- Documentation Writer — creates README, API docs, user guides
+- Code Reviewer — reviews for security, performance, best practices
+- React Specialist — modern React development with hooks
+- Python Expert — Python frameworks, testing, data science
 
-#### Four Usage Modes
-Qwen Code adapts to different working styles and automation needs through multiple usage patterns:
+**Create Custom Sub-agents:**
+```bash
+/agents create
+```
+
+[Learn more →](./docs/users/features/sub-agents)
+
+### 3. Approval Modes
+
+Control how Qwen Code interacts with your system through four permission modes:
+
+| Mode | File Editing | Shell Commands | Best For |
+|------|--------------|----------------|----------|
+| **Plan** | Read-only | Not executed | Code exploration, planning |
+| **Default** | Manual approval | Manual approval | New codebases, critical systems |
+| **Auto-Edit** | Auto-approved | Manual approval | Daily development tasks |
+| **YOLO** | Auto-approved | Auto-approved | Trusted automation, CI/CD |
+
+**Switch modes:** `Shift+Tab` during session or `/approval-mode <mode>`
+
+[Learn more →](./docs/users/features/approval-mode)
+
+### 4. Model Context Protocol (MCP)
+
+Connect Qwen Code to external tools, databases, and APIs through MCP servers.
+
+**Add an MCP Server:**
+```bash
+qwen mcp add --transport http my-server http://localhost:3000/mcp
+qwen mcp list
+```
+
+**Configuration Scopes:**
+- Project: `.qwen/settings.json`
+- User: `~/.qwen/settings.json`
+
+[Learn more →](./docs/users/features/mcp)
+
+### 5. Built-in Tools
+
+| Tool Category | Tools |
+|---------------|-------|
+| **File Operations** | Read, write, edit files with intelligent diff management |
+| **Shell Commands** | Execute system commands with configurable approval |
+| **Search** | File search, content search (ripgrep-powered) |
+| **Web** | Web fetch, web search (Tavily API) |
+| **Task Management** | TodoWrite, Task tool for sub-agent delegation |
+| **Memory** | Persistent context across sessions |
+
+[Learn more →](./docs/developers/tools/introduction)
+
+### 6. Commands System
+
+Qwen Code supports three command types:
+
+| Prefix | Type | Examples |
+|--------|------|----------|
+| `/` | Slash Commands | `/help`, `/clear`, `/compress`, `/mcp`, `/skills`, `/agents` |
+| `@` | File Injection | `@src/main.py explain this`, `@docs/ summarize` |
+| `!` | Shell Execution | `!git status`, `!npm test` |
+
+[Learn more →](./docs/users/features/commands)
+
+---
+
+## Usage Modes
 
 | Mode | Best For | Example |
 |------|----------|---------|
-| Interactive | Daily development work | `qwen` in your project folder |
-| Headless | Scripts and CI/CD automation | `qwen -p "run tests"` |
-| IDE Integration | Visual development experience | VS Code, Zed, JetBrains extensions |
-| TypeScript SDK | Building custom AI tools | Programmatically embed in applications |
+| **Interactive** | Daily development | `qwen` in your project folder |
+| **Headless** | Scripts and CI/CD | `qwen -p "run tests"` |
+| **IDE Integration** | Visual development | VS Code, Zed, JetBrains extensions |
+| **TypeScript SDK** | Custom AI tools | Programmatically embed in applications |
 
-#### Subagents System
-Break complex tasks into specialized subtasks handled by dedicated subagents. Each subagent focuses on specific capabilities like file editing, shell execution, or web searching, working together under the coordination of the main system. This enables more reliable handling of multi-step operations and better specialization for different types of work.
+---
 
-#### Built-in Tools
-Access a rich set of built-in capabilities that extend Qwen Code's functionality without requiring additional configuration:
+## Configuration
 
-- **File Operations**: Read, write, and edit files with intelligent diff management
-- **Shell Commands**: Execute system commands with configurable approval requirements
-- **Search Tools**: Find files and search content using ripgrep-powered search
-- **Web Capabilities**: Fetch web content and perform web searches
-- **Smart Edit**: Context-aware editing that preserves code structure and formatting
+### Settings Files
 
-#### Approval Modes
-Control how Qwen Code interacts with your system through four permission modes designed for different risk levels and use cases:
+| Location | Scope |
+|----------|-------|
+| `~/.qwen/settings.json` | User-level (all projects) |
+| `.qwen/settings.json` | Project-level (current project) |
 
-| Mode | File Editing | Shell Commands | Best Use |
-|------|--------------|----------------|----------|
-| Plan | Read-only only | Not executed | Code exploration and planning |
-| Default | Manual approval | Manual approval | New codebases and critical systems |
-| Auto-Edit | Auto-approved | Manual approval | Daily development tasks |
-| YOLO | Auto-approved | Auto-approved | Trusted automation and CI/CD |
-
-Cycle through modes during sessions using Shift+Tab for flexible permission control based on your current task.
-
-#### Agent Skills
-Extend Qwen Code's capabilities through modular, discoverable skills. Skills are organized folders containing instructions (and optionally scripts/resources) that the model can autonomously invoke based on your request context. Unlike slash commands which require explicit invocation, skills are model-invoked, allowing for more natural and contextual assistance.
-
-## Why Developers Choose Qwen Code
-
-### Open Source and Co-Evolving
-Both the framework and the Qwen3-Coder model are open-source, shipping and evolving together. This transparency allows you to understand how the system works, contribute improvements, and avoid vendor lock-in. The active development community ensures rapid iteration and continuous improvement.
-
-### OpenAI-Compatible Authentication
-Choose between two authentication methods based on your needs: use Qwen OAuth for 2,000 free requests per day, or configure an OpenAI-compatible API key for private deployments. This flexibility supports everything from personal experimentation to enterprise integration without mandatory vendor dependencies.
-
-### Rich Agentic Workflow
-Qwen Code provides a full agentic workflow experience similar to other advanced AI coding assistants, featuring sophisticated capabilities like Plan Mode for safe exploration, Subagents for specialized task handling, and MCP integration for connecting to external tools and data sources. These features work together to provide comprehensive assistance throughout the development lifecycle.
-
-### IDE-Friendly Integration
-While terminal-first by design, Qwen Code offers optional integrations for VS Code, Zed, and JetBrains IDEs. These integrations provide native graphical interfaces while maintaining access to the same powerful underlying capabilities, giving you the flexibility to work in whatever environment suits your preferences.
-
-## Getting Started in 30 Seconds
-
-### Prerequisites
-- Node.js 20+ (check with `node -v`)
-- A Qwen Code account
-
-### Installation
-
-#### NPM (Recommended)
-```bash
-npm install -g @qwen-code/qwen-code@latest
-```
-
-#### Homebrew (macOS, Linux)
-```bash
-brew install qwen-code
-```
-
-### First Session
-Navigate to your project directory and start Qwen Code:
+### Environment Variables
 
 ```bash
-cd your-project
-qwen
+# API Configuration
+export QWEN_API_KEY="your-api-key"
+
+# Sandbox Mode
+export GEMINI_SANDBOX="docker"
+
+# Debug Mode
+export DEBUG="true"
 ```
 
-Select Qwen OAuth (Free) authentication and follow the browser prompts to log in. Once authenticated, you can start exploring your codebase with natural language queries like "what does this project do?" or "explain the main architecture."
+### Command-Line Arguments
 
-Your OAuth credentials are cached locally after the first login, so you typically won't need to re-authenticate on subsequent sessions. Run `/auth` anytime to switch authentication methods or accounts.
+```bash
+qwen --model qwen3-coder-plus
+qwen --prompt "analyze this codebase"
+qwen --approval-mode auto-edit
+qwen --sandbox
+qwen --debug
+```
+
+[Full Configuration Reference →](./docs/users/configuration/settings)
+
+---
+
+## IDE Integrations
+
+| IDE | Extension |
+|-----|-----------|
+| **VS Code** | [Qwen Code Companion](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion) |
+| **Zed** | Built-in integration |
+| **JetBrains** | IntelliJ IDEA, PyCharm, WebStorm, GoLand |
+
+[View Integration Docs →](./docs/users/integration-vscode)
+
+---
+
+## Architecture Overview
+
+Qwen Code uses a modular architecture:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      CLI Package                            │
+│  (packages/cli) - User interactions, input/output, themes   │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Core Package                           │
+│  (packages/core) - API communication, tool orchestration    │
+└─────────────────────────────────────────────────────────────┘
+                              │
+              ┌───────────────┼───────────────┐
+              ▼               ▼               ▼
+       ┌──────────┐   ┌──────────┐   ┌──────────────┐
+       │ Built-in │   │   MCP    │   │  Sub-agents  │
+       │  Tools   │   │  Servers │   │   System     │
+       └──────────┘   └──────────┘   └──────────────┘
+```
+
+[Architecture Details →](./docs/developers/architecture)
+
+---
+
+## Roadmap
+
+### Completed (Phase 1-2)
+- ✅ Terminal UI, OAuth, Settings, Themes
+- ✅ Skills (Experimental), Sub-Agents, Headless Mode
+- ✅ MCP, Multi-Model Support, Plan Mode
+- ✅ VS Code Extension, GitHub Actions
+- ✅ Anthropic Provider, Multimodal Input (images, PDFs, video)
+- ✅ LSP Support (Experimental), Concurrent Runner
+
+### In Progress / Planned
+- 🔄 Cross-platform Compatibility (Windows/Linux/macOS)
+- 🔄 Hooks System for Extensions
+- 📅 Better UI, Onboarding Flow, Permission System
+- 📅 Cost Tracking, Management Dashboard
+
+[Roadmap Details →](./docs/developers/roadmap)
+
+---
 
 ## What's Next
 
-After getting Qwen Code installed and running, explore more advanced features and integration options:
-
-- Continue with the Quick Start guide for a comprehensive introduction to core workflows
-- Learn about different Authentication Methods including OAuth and API keys
-- Explore advanced capabilities in the Deep Dive section, including Subagents System, Built-in Tools Reference, and Model Context Protocol (MCP)
-- Set up IDE Integration for VS Code, Zed, or JetBrains
-- Build custom applications with the TypeScript SDK starting with SDK Quick Start
-
-For more detailed information, see the complete documentation:
+After getting started, explore:
 
 ### User Documentation
+- [Quick Start Guide](./docs/users/quickstart) — Comprehensive introduction
+- [Common Workflows](./docs/users/common-workflow) — Best practices
+- [Skills](./docs/users/features/skills) — Create custom AI skills
+- [Sub-Agents](./docs/users/features/sub-agents) — Specialized AI assistants
+- [Approval Modes](./docs/users/features/approval-mode) — Control permissions
+- [MCP](./docs/users/features/mcp) — Connect external tools
+- [Commands](./docs/users/features/commands) — Slash, @, ! commands
+- [Headless Mode](./docs/users/features/headless) — Automation & CI/CD
+- [Configuration](./docs/users/configuration/settings) — All settings reference
 
-#### Getting Started
-- [Quick Start Guide](./docs/users/quickstart.md) - Getting started in 30 seconds
-- [Common Workflows](./docs/users/common-workflow.md) - Common tasks and best practices
-
-#### Core Features
-- [Architecture Overview](./docs/developers/architecture.md) - System architecture and components
-- [Subagents](./docs/users/features/sub-agents.md) - Breaking complex tasks into specialized subtasks
-- [Commands](./docs/users/features/tools.md) - Managing sessions, customizing interface, controlling behavior
-- [Approval Mode](./docs/users/features/approval-mode.md) - Controlling permissions and safety
-- [Agent Skills (Experimental)](./docs/users/features/skills.md) - Extending capabilities with modular skills
-- [Model Context Protocol (MCP)](./docs/users/features/mcp.md) - Connecting to external tools and data sources
-- [Headless Mode](./docs/users/features/headless.md) - Non-interactive automation capabilities
-- [Vision Models and Multimodal](./docs/users/features/vision-models.md) - Vision and multimodal capabilities
-
-#### Configuration
-- [Authentication](./docs/users/configuration/auth.md) - OAuth and API key options
-
-#### IDE Integration
-- [VS Code Integration](./docs/users/integration-vscode.md) - Using Qwen Code in VS Code
-- [Zed Integration](./docs/users/integration-zed.md) - Using Qwen Code in Zed
-- [JetBrains Integration](./docs/users/integration-jetbrains.md) - Using Qwen Code in JetBrains IDEs
+### Use Cases (Beyond Code)
+- [Overview](./docs/use-cases/README.md) — Qwen Code for non-development tasks
+- [Office & Admin](./docs/use-cases/office/README.md) — Email, documents, scheduling
+- [HR & Recruiting](./docs/use-cases/hr/README.md) — Job descriptions, resume screening
+- [Finance & Accounting](./docs/use-cases/finance/README.md) — Invoices, budgets, forecasts
+- [Marketing & Content](./docs/use-cases/marketing/README.md) — Content creation, social media
+- [Legal & Compliance](./docs/use-cases/legal/README.md) — Contract review, compliance audits
+- [Sales & Customer Success](./docs/use-cases/sales/README.md) — Proposals, health scoring
+- [Personal & Home](./docs/use-cases/personal/README.md) — Finance, travel, education
 
 ### Developer Documentation
-
-#### Architecture
-- [System Architecture](./docs/developers/architecture.md) - Technical architecture overview
+- [Architecture](./docs/developers/architecture) — System design
+- [Tools Reference](./docs/developers/tools/introduction) — Built-in tools
+- [Roadmap](./docs/developers/roadmap) — Development plan
 
 ### Additional Resources
-- [Beyond Code Assistance](./beyond-code-assistance.md) - Additional use cases beyond code assistance
+- [Beyond Code Assistance](./beyond-code-assistance) — Research, education, business automation
+
+---
+
+**Last Updated:** March 2, 2026  
+**Version:** Qwen Code v0.6.0+

@@ -2,115 +2,86 @@
 
 > 👏 Welcome to Qwen Code!
 
-This quickstart guide will have you using AI-powered coding assistance in just a few minutes. By the end, you'll understand how to use Qwen Code for common development tasks.
+This quickstart guide will have you using AI-powered coding assistance in just a few minutes.
 
-## Before you begin
+## Before You Begin
 
 Make sure you have:
 
 - A **terminal** or command prompt open
 - A code project to work with
-- A [Qwen Code](https://chat.qwen.ai/auth?mode=register) account
+- Node.js 20+ (check with `node -v`)
 
 ## Step 1: Install Qwen Code
 
-To install Qwen Code, use one of the following methods:
+### NPM (Recommended)
 
-### NPM (recommended)
-
-Requires [Node.js 20+](https://nodejs.org/download), you can use `node -v` check the version. If it's not installed, use the following command to install it.
-
-If you have [Node.js or newer installed](https://nodejs.org/en/download/):
-
-```sh
+```bash
 npm install -g @qwen-code/qwen-code@latest
 ```
 
 ### Homebrew (macOS, Linux)
 
-```sh
+```bash
 brew install qwen-code
 ```
 
-## Step 2: Log in to your account
+## Step 2: Start Your First Session
 
-Qwen Code requires an account to use. When you start an interactive session with the `qwen` command, you'll need to log in:
+Navigate to your project and start Qwen Code:
 
 ```bash
-# You'll be prompted to log in on first use
+cd your-project
 qwen
 ```
 
-```bash
-# Follow the prompts to log in with your account
-/auth
-```
-
-Select `Qwen OAuth`, log in to your account and follow the prompts to confirm. Once logged in, your credentials are stored and you won't need to log in again.
+On first use, you'll be prompted to log in. Select **Qwen OAuth (Free)** and follow the browser prompts to authenticate. Your credentials are cached locally for future sessions.
 
 > [!note]
->
-> When you first authenticate Qwen Code with your Qwen account, a workspace called ".qwen" is automatically created for you. This workspace provides centralized cost tracking and management for all Qwen Code usage in your organization.
+> When you first authenticate, a workspace called ".qwen" is automatically created for centralized cost tracking and management.
 
 > [!tip]
->
-> If you need to log in again or switch accounts, use the `/auth` command within Qwen Code.
+> To switch accounts or re-authenticate, use `/auth` within Qwen Code.
 
-## Step 3: Start your first session
+## Step 3: Chat with Qwen Code
 
-Open your terminal in any project directory and start Qwen Code:
+### Ask Your First Question
 
-```bash
-# optional
-cd /path/to/your/project
-# start qwen
-qwen
+Qwen Code will analyze your files and provide a summary. Try these:
+
 ```
-
-You'll see the Qwen Code welcome screen with your session information, recent conversations, and latest updates. Type `/help` for available commands.
-
-## Chat with Qwen Code
-
-### Ask your first question
-
-Qwen Code will analyze your files and provide a summary. You can also ask more specific questions:
+what does this project do?
+```
 
 ```
 explain the folder structure
 ```
-
-You can also ask Qwen Code about its own capabilities:
 
 ```
 what can Qwen Code do?
 ```
 
 > [!note]
->
-> Qwen Code reads your files as needed - you don't have to manually add context. Qwen Code also has access to its own documentation and can answer questions about its features and capabilities.
+> Qwen Code reads your files as needed — you don't have to manually add context.
 
-### Make your first code change
+### Make Your First Code Change
 
-Now let's make Qwen Code do some actual coding. Try a simple task:
+Try a simple task:
 
 ```
 add a hello world function to the main file
 ```
 
 Qwen Code will:
-
 1. Find the appropriate file
 2. Show you the proposed changes
 3. Ask for your approval
 4. Make the edit
 
 > [!note]
->
-> Qwen Code always asks for permission before modifying files. You can approve individual changes or enable "Accept all" mode for a session.
+> Qwen Code always asks for permission before modifying files. Use [Approval Modes](./features/approval-mode) to customize this behavior.
 
 ### Use Git with Qwen Code
-
-Qwen Code makes Git operations conversational:
 
 ```
 what files have I changed?
@@ -120,132 +91,178 @@ what files have I changed?
 commit my changes with a descriptive message
 ```
 
-You can also prompt for more complex Git operations:
-
 ```
-create a new branch called feature/quickstart
-```
-
-```
-show me the last 5 commits
+create a new branch called feature/new-feature
 ```
 
 ```
 help me resolve merge conflicts
 ```
 
-### Fix a bug or add a feature
+---
 
-Qwen Code is proficient at debugging and feature implementation.
+## Common Workflows
 
-Describe what you want in natural language:
+### Fix a Bug
 
-```
-add input validation to the user registration form
-```
-
-Or fix existing issues:
+Describe the issue:
 
 ```
 there's a bug where users can submit empty forms - fix it
 ```
 
-Qwen Code will:
-
-- Locate the relevant code
-- Understand the context
-- Implement a solution
-- Run tests if available
-
-### Test out other common workflows
-
-There are a number of ways to work with Qwen Code:
-
-**Refactor code**
+Or share an error:
 
 ```
-refactor the authentication module to use async/await instead of callbacks
+I'm seeing an error when I run npm test
 ```
 
-**Write tests**
+### Refactor Code
+
+```
+refactor the authentication module to use async/await
+```
+
+### Write Tests
 
 ```
 write unit tests for the calculator functions
 ```
 
-**Update documentation**
+### Update Documentation
 
 ```
 update the README with installation instructions
 ```
 
-**Code review**
+### Code Review
 
 ```
 review my changes and suggest improvements
 ```
 
 > [!tip]
->
-> **Remember**: Qwen Code is your AI pair programmer. Talk to it like you would a helpful colleague - describe what you want to achieve, and it will help you get there.
+> **Remember**: Qwen Code is your AI pair programmer. Talk to it like you would a helpful colleague.
 
-## Essential commands
+---
 
-Here are the most important commands for daily use:
+## Use Specialized Sub-Agents
 
-| Command               | What it does                                     | Example                       |
-| --------------------- | ------------------------------------------------ | ----------------------------- |
-| `qwen`                | start Qwen Code                                  | `qwen`                        |
-| `/auth`               | Change authentication method                     | `/auth`                       |
-| `/help`               | Display help information for available commands  | `/help` or `/?`               |
-| `/compress`           | Replace chat history with summary to save Tokens | `/compress`                   |
-| `/clear`              | Clear terminal screen content                    | `/clear` (shortcut: `Ctrl+L`) |
-| `/theme`              | Change Qwen Code visual theme                    | `/theme`                      |
-| `/language`           | View or change language settings                 | `/language`                   |
-| → `ui [language]`     | Set UI interface language                        | `/language ui zh-CN`          |
-| → `output [language]` | Set LLM output language                          | `/language output Chinese`    |
-| `/quit`               | Exit Qwen Code immediately                       | `/quit` or `/exit`            |
+Sub-agents are specialized AI assistants for specific tasks.
 
-See the [CLI reference](./features/commands) for a complete list of commands.
+### View Available Sub-Agents
 
-## Pro tips for beginners
+```
+/agents
+```
 
-**Be specific with your requests**
+### Use Sub-Agents
 
-- Instead of: "fix the bug"
-- Try: "fix the login bug where users see a blank screen after entering wrong credentials"
+Qwen Code automatically delegates appropriate tasks:
 
-**Use step-by-step instructions**
+```
+review my recent code changes for security issues
+```
 
-- Break complex tasks into steps:
+```
+run all tests and fix any failures
+```
+
+Explicitly request a specific sub-agent:
+
+```
+use the code-reviewer sub-agent to check the auth module
+```
+
+### Create Custom Sub-Agents
+
+```
+/agents create
+```
+
+Follow the prompts to define:
+- A unique identifier (e.g., `code-reviewer`, `api-designer`)
+- When to use this agent
+- Which tools it can access
+- A system prompt describing the agent's role
+
+> [!tip]
+> Learn more about [Sub-Agents](./features/sub-agents) and [Approval Modes](./features/approval-mode).
+
+---
+
+## Essential Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `qwen` | Start Qwen Code | `qwen` |
+| `/help` | Show available commands | `/help` |
+| `/clear` | Clear screen | `/clear` or `Ctrl+L` |
+| `/compress` | Compress chat history | `/compress` |
+| `/agents` | Manage sub-agents | `/agents` |
+| `/skills` | List and use skills | `/skills` |
+| `/mcp` | Manage MCP servers | `/mcp` |
+| `/approval-mode` | Change permission mode | `/approval-mode auto-edit` |
+| `/theme` | Change theme | `/theme` |
+| `/quit` | Exit Qwen Code | `/quit` |
+
+See the [Commands Reference](./features/commands) for a complete list.
+
+---
+
+## Pro Tips for Beginners
+
+### Be Specific
+
+❌ "fix the bug"  
+✅ "fix the login bug where users see a blank screen after entering wrong credentials"
+
+### Use Step-by-Step Instructions
 
 ```
 1. create a new database table for user profiles
-2. create an API endpoint to get and update user profiles
-3. build a webpage that allows users to see and edit their information
+2. create an API endpoint to get and update profiles
+3. build a webpage to view and edit profiles
 ```
 
-**Let Qwen Code explore first**
-
-- Before making changes, let Qwen Code understand your code:
+### Let Qwen Code Explore First
 
 ```
 analyze the database schema
 ```
 
 ```
-build a dashboard showing products that are most frequently returned by our UK customers
+build a dashboard showing products most frequently returned by UK customers
 ```
 
-**Save time with shortcuts**
+### Use Keyboard Shortcuts
 
-- Press `?` to see all available keyboard shortcuts
-- Use Tab for command completion
-- Press ↑ for command history
-- Type `/` to see all slash commands
+| Shortcut | Action |
+|----------|--------|
+| `?` | Show all shortcuts |
+| `Tab` | Command completion |
+| `↑` | Command history |
+| `/` | Show slash commands |
+| `Shift+Tab` | Cycle approval modes |
 
-## Getting help
+---
+
+## Getting Help
 
 - **In Qwen Code**: Type `/help` or ask "how do I..."
-- **Documentation**: You're here! Browse other guides
-- **Community**: Join our [GitHub Discussion](https://github.com/QwenLM/qwen-code/discussions) for tips and support
+- **Documentation**: Browse other guides in this documentation
+- **Community**: Join [GitHub Discussions](https://github.com/QwenLM/qwen-code/discussions) for tips and support
+
+---
+
+## What's Next?
+
+- [Common Workflows](./common-workflow) — Detailed workflow examples
+- [Skills](./features/skills) — Create custom AI capabilities
+- [Sub-Agents](./features/sub-agents) — Specialized AI assistants
+- [MCP](./features/mcp) — Connect external tools and data sources
+- [Configuration](./configuration/settings) — Customize Qwen Code
+
+---
+
+*Last updated: March 2, 2026*

@@ -1,80 +1,65 @@
-# Approval Mode
+# Approval Modes
 
-Qwen Code offers three distinct permission modes that allow you to flexibly control how AI interacts with your code and system based on task complexity and risk level.
+## Overview
+
+Qwen Code offers **four distinct permission modes** that control how AI interacts with your code and system. You can flexibly choose based on task complexity and risk level.
+
+---
 
 ## Permission Modes Comparison
 
-| Mode           | File Editing                | Shell Commands              | Best For                                                                                               | Risk Level |
-| -------------- | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ | ---------- |
-| **Plan**       | ❌ Read-only analysis only  | ❌ Not executed             | • Code exploration <br>• Planning complex changes <br>• Safe code review                               | Lowest     |
-| **Default**    | ✅ Manual approval required | ✅ Manual approval required | • New/unfamiliar codebases <br>• Critical systems <br>• Team collaboration <br>• Learning and teaching | Low        |
-| **Auto-Edit**  | ✅ Auto-approved            | ❌ Manual approval required | • Daily development tasks <br>• Refactoring and code improvements <br>• Safe automation                | Medium     |
-| **YOLO**       | ✅ Auto-approved            | ✅ Auto-approved            | • Trusted personal projects <br>• Automated scripts/CI/CD <br>• Batch processing tasks                 | Highest    |
+| Mode | File Editing | Shell Commands | Best For | Risk Level |
+|------|-------------|----------------|----------|------------|
+| **Plan** | ❌ Read-only analysis only | ❌ Not executed | Code exploration, planning complex changes, safe code review | Lowest |
+| **Default** | ✅ Manual approval required | ✅ Manual approval required | New/unfamiliar codebases, critical systems, team collaboration, learning/teaching | Low |
+| **Auto-Edit** | ✅ Auto-approved | ❌ Manual approval required | Daily development tasks, refactoring, code improvements, safe automation | Medium |
+| **YOLO** | ✅ Auto-approved | ✅ Auto-approved | Trusted personal projects, automated scripts/CI/CD, batch processing | Highest |
 
-### Quick Reference Guide
+---
 
-- **Start in Plan Mode**: Great for understanding before making changes
-- **Work in Default Mode**: The balanced choice for most development work
-- **Switch to Auto-Edit**: When you're making lots of safe code changes
-- **Use YOLO sparingly**: Only for trusted automation in controlled environments
+## 1. Plan Mode
 
-> [!tip]
->
-> You can quickly cycle through modes during a session using **Shift+Tab**. The terminal status bar shows your current mode, so you always know what permissions Qwen Code has.
+### Purpose
+Instructs Qwen Code to create plans by analyzing the codebase with **read-only operations**.
 
-## 1. Use Plan Mode for safe code analysis
+### When to Use
+- **Multi-step implementation**: When your feature requires edits to many files
+- **Code exploration**: Research the codebase thoroughly before changing anything
+- **Interactive development**: Iterate on direction with Qwen Code
+- **Safe review**: Understanding code without making changes
 
-Plan Mode instructs Qwen Code to create a plan by analyzing the codebase with **read-only** operations, perfect for exploring codebases, planning complex changes, or reviewing code safely.
+### How to Use
 
-### When to use Plan Mode
-
-- **Multi-step implementation**: When your feature requires making edits to many files
-- **Code exploration**: When you want to research the codebase thoroughly before changing anything
-- **Interactive development**: When you want to iterate on the direction with Qwen Code
-
-### How to use Plan Mode
-
-**Turn on Plan Mode during a session**
-
-You can switch into Plan Mode during a session using **Shift+Tab** to cycle through permission modes.
-
-If you are in Normal Mode, **Shift+Tab** first switches into `auto-edits` Mode, indicated by `⏵⏵ accept edits on` at the bottom of the terminal. A subsequent **Shift+Tab** will switch into Plan Mode, indicated by `⏸ plan mode`.
-
-**Start a new session in Plan Mode**
-
-To start a new session in Plan Mode, use the `/approval-mode` then select `plan`
-
-```bash
-/approval-mode
+**Switch during a session:**
 ```
-
-**Run "headless" queries in Plan Mode**
-
-You can also run a query in Plan Mode directly with `-p` or `prompt`:
-
-```bash
-qwen --prompt "What is machine learning?"
+Shift+Tab (or Tab on Windows) → cycle to Plan Mode
 ```
+Indicated by `⏸ plan mode` at the bottom of the terminal.
 
-### Example: Planning a complex refactor
-
+**Start a new session:**
 ```bash
 /approval-mode plan
 ```
 
+**Run headless queries:**
+```bash
+qwen --prompt "What is machine learning?"
+qwen -p "Analyze this codebase structure"
 ```
+
+### Example
+```
+/approval-mode plan
 I need to refactor our authentication system to use OAuth2. Create a detailed migration plan.
 ```
 
-Qwen Code analyzes the current implementation and create a comprehensive plan. Refine with follow-ups:
+Qwen Code will:
+1. Analyze current authentication implementation
+2. Identify all files that need modification
+3. Create a step-by-step migration plan
+4. **Not make any changes** until you switch modes
 
-```
-What about backward compatibility?
-How should we handle database migration?
-```
-
-### Configure Plan Mode as default
-
+### Configure as Default
 ```json
 // .qwen/settings.json
 {
@@ -84,61 +69,51 @@ How should we handle database migration?
 }
 ```
 
-## 2. Use Default Mode for Controlled Interaction
+---
 
-Default Mode is the standard way to work with Qwen Code. In this mode, you maintain full control over all potentially risky operations - Qwen Code will ask for your approval before making any file changes or executing shell commands.
+## 2. Default Mode
 
-### When to use Default Mode
+### Purpose
+Standard mode with **full manual control** over all potentially risky operations.
 
-- **New to a codebase**: When you're exploring an unfamiliar project and want to be extra cautious
-- **Critical systems**: When working on production code, infrastructure, or sensitive data
-- **Learning and teaching**: When you want to understand each step Qwen Code is taking
-- **Team collaboration**: When multiple people are working on the same codebase
-- **Complex operations**: When the changes involve multiple files or complex logic
+### When to Use
+- **New to a codebase**: Exploring unfamiliar projects with extra caution
+- **Critical systems**: Production code, infrastructure, sensitive data
+- **Learning and teaching**: Understanding each step Qwen Code takes
+- **Team collaboration**: Multiple people working on the same codebase
+- **Complex operations**: Changes involving multiple files or complex logic
 
-### How to use Default Mode
+### How to Use
 
-**Turn on Default Mode during a session**
-
-You can switch into Default Mode during a session using **Shift+Tab** to cycle through permission modes. If you're in any other mode, pressing **Shift+Tab** will eventually cycle back to Default Mode, indicated by the absence of any mode indicator at the bottom of the terminal.
-
-**Start a new session in Default Mode**
-
-Default Mode is the initial mode when you start Qwen Code. If you've changed modes and want to return to Default Mode, use:
-
+**Switch during a session:**
 ```
+Shift+Tab (or Tab on Windows) → cycle to Default Mode
+```
+Indicated by the **absence** of any mode indicator at the terminal bottom.
+
+**Start a new session:**
+```bash
 /approval-mode default
 ```
 
-**Run "headless" queries in Default Mode**
-
-When running headless commands, Default Mode is the default behavior. You can explicitly specify it with:
-
-```
+**Run headless queries:**
+```bash
 qwen --prompt "Analyze this code for potential bugs"
 ```
 
-### Example: Safely implementing a feature
-
+### Example
 ```
 /approval-mode default
-```
-
-```
 I need to add user profile pictures to our application. The pictures should be stored in an S3 bucket and the URLs saved in the database.
 ```
 
-Qwen Code will analyze your codebase and propose a plan. It will then ask for approval before:
-
+Qwen Code will ask for approval before:
 1. Creating new files (controllers, models, migrations)
-2. Modifying existing files (adding new columns, updating APIs)
-3. Running any shell commands (database migrations, dependency installation)
+2. Modifying existing files (adding columns, updating APIs)
+3. Running shell commands (database migrations, dependency installation)
 
-You can review each proposed change and approve or reject it individually.
-
-### Configure Default Mode as default
-
-```bash
+### Configure as Default
+```json
 // .qwen/settings.json
 {
   "permissions": {
@@ -147,68 +122,93 @@ You can review each proposed change and approve or reject it individually.
 }
 ```
 
-## 3. Auto Edits Mode
+---
 
-Auto-Edit Mode instructs Qwen Code to automatically approve file edits while requiring manual approval for shell commands, ideal for accelerating development workflows while maintaining system safety.
+## 3. Auto-Edit Mode
 
-### When to use Auto-Accept Edits Mode
+### Purpose
+**Automatically approves file edits** while requiring manual approval for shell commands.
 
+### When to Use
 - **Daily development**: Ideal for most coding tasks
-- **Safe automation**: Allows AI to modify code while preventing accidental execution of dangerous commands
-- **Team collaboration**: Use in shared projects to avoid unintended impacts on others
+- **Safe automation**: AI modifies code while preventing dangerous command execution
+- **Team collaboration**: Shared projects to avoid unintended impacts
+- **Refactoring**: Large-scale code improvements with test coverage
 
-### How to switch to this mode
+### How to Switch
 
-```
-# Switch via command
+**Via command:**
+```bash
 /approval-mode auto-edit
+```
 
-# Or use keyboard shortcut
-Shift+Tab  # Switch from other modes
+**Via keyboard shortcut:**
+```
+Shift+Tab (or Tab on Windows) → cycle from other modes
 ```
 
 ### Workflow Example
 
 1. You ask Qwen Code to refactor a function
 2. AI analyzes the code and proposes changes
-3. **Automatically** applies all file changes without confirmation
-4. If tests need to be run, it will **request approval** to execute `npm test`
+3. **Automatically applies all file changes** without confirmation
+4. If tests need to run, it **requests approval** to execute `npm test`
+
+### Configure as Default
+```json
+// .qwen/settings.json
+{
+  "permissions": {
+    "defaultMode": "auto-edit"
+  }
+}
+```
+
+---
 
 ## 4. YOLO Mode - Full Automation
 
-YOLO Mode grants Qwen Code the highest permissions, automatically approving all tool calls including file editing and shell commands.
+### Purpose
+Grants **highest permissions**, automatically approving all tool calls including file editing and shell commands.
 
-### When to use YOLO Mode
+### ⚠️ Security Warning
 
+> **Use YOLO Mode with caution:** AI can execute **any command** with your terminal permissions. Ensure:
+> 1. You trust the current codebase
+> 2. You understand all actions AI will perform
+> 3. Important files are backed up or committed to version control
+
+### When to Use
 - **Automated scripts**: Running predefined automated tasks
 - **CI/CD pipelines**: Automated execution in controlled environments
 - **Personal projects**: Rapid iteration in fully trusted environments
 - **Batch processing**: Tasks requiring multi-step command chains
 
-> [!warning]
->
-> **Use YOLO Mode with caution**: AI can execute any command with your terminal permissions. Ensure:
->
-> 1. You trust the current codebase
-> 2. You understand all actions AI will perform
-> 3. Important files are backed up or committed to version control
+### How to Enable
 
-### How to enable YOLO Mode
-
-```
-# Temporarily enable (current session only)
+**Temporarily (current session only):**
+```bash
 /approval-mode yolo
+```
 
-# Set as project default
+**Set as project default:**
+```bash
 /approval-mode yolo --project
+```
 
-# Set as user global default
+**Set as user global default:**
+```bash
 /approval-mode yolo --user
 ```
 
-### Configuration Example
-
+**Via command-line:**
 ```bash
+qwen --yolo
+qwen --approval-mode yolo
+```
+
+### Configuration
+```json
 // .qwen/settings.json
 {
   "permissions": {
@@ -222,42 +222,153 @@ YOLO Mode grants Qwen Code the highest permissions, automatically approving all 
 ### Automated Workflow Example
 
 ```bash
-# Fully automated refactoring task
 qwen --prompt "Run the test suite, fix all failing tests, then commit changes"
-
-# Without human intervention, AI will:
-# 1. Run test commands (auto-approved)
-# 2. Fix failed test cases (auto-edit files)
-# 3. Execute git commit (auto-approved)
 ```
+
+Without human intervention, AI will:
+1. Run test commands (auto-approved)
+2. Fix failed test cases (auto-edit files)
+3. Execute git commit (auto-approved)
+
+---
 
 ## Mode Switching & Configuration
 
 ### Keyboard Shortcut Switching
 
-During a Qwen Code session, use **Shift+Tab** to quickly cycle through the three modes:
+During a Qwen Code session, use **Shift+Tab** (or **Tab on Windows**) to cycle through modes:
 
 ```
 Default Mode → Auto-Edit Mode → YOLO Mode → Plan Mode → Default Mode
 ```
 
+The terminal status bar shows your current mode at all times:
+
+| Mode Display | Current Mode |
+|--------------|--------------|
+| (no indicator) | Default Mode |
+| `⚡ auto-edit` | Auto-Edit Mode |
+| `🚀 yolo` | YOLO Mode |
+| `⏸ plan mode` | Plan Mode |
+
 ### Persistent Configuration
 
-```
-// Project-level: ./.qwen/settings.json
-// User-level: ~/.qwen/settings.json
+**Project-level:** `./.qwen/settings.json`
+**User-level:** `~/.qwen/settings.json`
+
+```json
 {
   "permissions": {
-    "defaultMode": "auto-edit",  // or "plan" or "yolo"
+    "defaultMode": "auto-edit",  // "plan", "default", "auto-edit", or "yolo"
     "confirmShellCommands": true,
     "confirmFileEdits": true
   }
 }
 ```
 
-### Mode Usage Recommendations
+### Command-Line Options
 
-1. **New to codebase**: Start with **Plan Mode** for safe exploration
-2. **Daily development tasks**: Use **Auto-Accept Edits** (default mode), efficient and safe
-3. **Automated scripts**: Use **YOLO Mode** in controlled environments for full automation
-4. **Complex refactoring**: Use **Plan Mode** first for detailed planning, then switch to appropriate mode for execution
+```bash
+# Set mode for this session
+qwen --approval-mode plan
+
+# YOLO mode shortcut
+qwen --yolo
+
+# Headless with specific mode
+qwen -p "analyze this" --approval-mode default
+```
+
+---
+
+## Security Implications
+
+| Mode | Security Risk | Mitigation |
+|------|--------------|------------|
+| **Plan** | Minimal — read-only | None needed |
+| **Default** | Low — manual review required | Review each change carefully |
+| **Auto-Edit** | Medium — auto file changes | Ensure code is backed up; shell commands still require approval |
+| **YOLO** | **High** — full automation | Only use in trusted environments; backup/commit before use |
+
+### Best Security Practices
+
+1. **Always commit before YOLO**: `git add . && git commit -m "WIP"`
+2. **Use Plan mode for exploration**: Understand before modifying
+3. **Default for production**: Manual approval for critical systems
+4. **Auto-Edit for daily work**: Balance of safety and efficiency
+5. **Review shell commands**: Even in Auto-Edit, review command approvals
+
+---
+
+## Best Practices & Recommendations
+
+### Scenario-Based Mode Selection
+
+| Scenario | Recommended Mode | Rationale |
+|----------|-----------------|-----------|
+| Understanding codebase | Plan | Safe exploration without changes |
+| Planning complex changes | Plan | Create detailed plan first |
+| Working on production code | Default | Manual review for critical changes |
+| Team collaboration | Default or Auto-Edit | Balance safety with efficiency |
+| Daily coding tasks | Auto-Edit | Efficient for routine work |
+| Refactoring with tests | Auto-Edit | Auto-apply safe changes |
+| CI/CD automation | YOLO | Full automation in controlled env |
+| Personal trusted projects | YOLO | Maximum efficiency |
+
+### Workflow Tips
+
+1. **Start with Plan**: Explore and plan before making changes
+2. **Switch to Auto-Edit**: Apply planned changes efficiently
+3. **Use YOLO sparingly**: Only for trusted, repetitive tasks
+4. **Default for review**: When learning or auditing code
+
+### Quick Reference Guide
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    APPROVAL MODE FLOW                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Plan Mode                                                 │
+│   └─→ "What files need to change?"                         │
+│                                                             │
+│   Default Mode                                              │
+│   └─→ "Review each change carefully"                       │
+│                                                             │
+│   Auto-Edit Mode                                            │
+│   └─→ "Auto-apply file changes, ask for commands"          │
+│                                                             │
+│   YOLO Mode                                                 │
+│   └─→ "Full automation - use with caution!"                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Troubleshooting
+
+### Mode Not Switching
+
+1. **Check keyboard shortcut**: Use `Shift+Tab` (not just `Tab` on non-Windows)
+2. **Verify command**: `/approval-mode <mode>` with correct spelling
+3. **Restart session**: Some changes require new session
+
+### Unexpected Approval Prompts
+
+1. **Check current mode**: Look at terminal status bar
+2. **Verify settings**: Check `.qwen/settings.json` for overrides
+3. **Tool-specific settings**: Some tools may have individual approval settings
+
+---
+
+## Related Documentation
+
+- [Commands](./commands) — `/approval-mode` command reference
+- [Configuration](../configuration/settings) — Permission settings
+- [Security](../configuration/settings#security) — Security configuration
+- [Headless Mode](./headless) — Automation with approval modes
+
+---
+
+*Last updated: March 2, 2026*
