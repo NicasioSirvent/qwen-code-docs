@@ -311,7 +311,7 @@ After getting started, explore:
 - [Roadmap](./docs/developers/roadmap) — Development plan
 
 ### Additional Resources
-- [Beyond Code Assistance](./beyond-code-assistance) — Research, education, business automation
+- [Beyond Code Assistance](./beyond-code-assistance.md) — Research, education, business automation
 
 ---
 
