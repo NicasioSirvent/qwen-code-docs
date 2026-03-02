@@ -728,7 +728,7 @@ qwen mcp add wordpress npx -y @modelcontextprotocol/server-wordpress \
 
 - [Skills Guide](../users/features/skills) — Creating custom skills
 - [Sub-Agents Guide](../users/features/sub-agents) — Creating specialized agents
-- [Sales Use Cases](../sales) — Sales and customer success
+- [Sales Use Cases](../sales/README.md) — Sales and customer success
 - [MCP Guide](../users/features/mcp) — Connecting external tools
 
 ---

@@ -42,7 +42,7 @@ explain the main architecture
 You'll be prompted to log in on first use. That's it! [Continue with Quickstart (5 mins) →](./docs/users/quickstart)
 
 > [!tip]
-> See [troubleshooting](./docs/users/support/troubleshooting) if you hit issues.
+> See [Common Workflows](./docs/users/common-workflow) if you hit issues.
 
 > [!note]
 > **VS Code Extension (Beta)**: Prefer a graphical interface? Our **VS Code extension** provides an easy-to-use native IDE experience. Install [Qwen Code Companion](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion) from the marketplace.
@@ -157,7 +157,7 @@ qwen mcp list
 | **Task Management** | TodoWrite, Task tool for sub-agent delegation |
 | **Memory** | Persistent context across sessions |
 
-[Learn more →](./docs/developers/tools/introduction)
+[Learn more →](./docs/users/features/tools)
 
 ### 6. Commands System
 
@@ -276,7 +276,7 @@ Qwen Code uses a modular architecture:
 - 📅 Better UI, Onboarding Flow, Permission System
 - 📅 Cost Tracking, Management Dashboard
 
-[Roadmap Details →](./docs/developers/roadmap)
+[Roadmap Details →](./docs/developers/architecture)
 
 ---
 
@@ -307,8 +307,8 @@ After getting started, explore:
 
 ### Developer Documentation
 - [Architecture](./docs/developers/architecture) — System design
-- [Tools Reference](./docs/developers/tools/introduction) — Built-in tools
-- [Roadmap](./docs/developers/roadmap) — Development plan
+- [Tools Reference](./docs/users/features/tools) — Built-in tools
+- [Architecture](./docs/developers/architecture) — Development plan
 
 ### Additional Resources
 - [Beyond Code Assistance](./beyond-code-assistance.md) — Research, education, business automation

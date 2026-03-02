@@ -39,8 +39,8 @@
 
 ### Architecture
 - [System Architecture](../developers/architecture.md) — Technical architecture overview
-- [Tools Reference](../developers/tools/introduction.md) — Built-in tools documentation
-- [Roadmap](../developers/roadmap.md) — Development plan and future features
+- [Tools Reference](../users/features/tools.md) — Built-in tools documentation
+- [Architecture](../developers/architecture.md) — Development plan and future features
 
 ## About Qwen Code
 

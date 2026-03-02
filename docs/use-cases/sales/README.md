@@ -893,7 +893,7 @@ qwen mcp add outreach npx -y @modelcontextprotocol/server-outreach \
 
 - [Skills Guide](../users/features/skills) — Creating custom skills
 - [Sub-Agents Guide](../users/features/sub-agents) — Creating specialized agents
-- [Marketing Use Cases](../marketing) — Marketing and content
+- [Marketing Use Cases](../marketing/README.md) — Marketing and content
 - [MCP Guide](../users/features/mcp) — Connecting external tools
 
 ---

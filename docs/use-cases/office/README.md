@@ -778,7 +778,7 @@ Keep a log of successful prompts and workflows:
 - [Sub-Agents Guide](../users/features/sub-agents) — Creating specialized agents
 - [MCP Guide](../users/features/mcp) — Connecting external tools
 - [HR Use Cases](../hr) — Recruiting and people operations
-- [Finance Use Cases](../finance) — Accounting and financial tasks
+- [Finance Use Cases](../finance/README.md) — Accounting and financial tasks
 
 ---
 

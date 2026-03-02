@@ -662,7 +662,7 @@ qwen mcp add linkedin npx -y @modelcontextprotocol/server-linkedin \
 
 - [Skills Guide](../users/features/skills) — Creating custom skills
 - [Sub-Agents Guide](../users/features/sub-agents) — Creating specialized agents
-- [Office Use Cases](../office) — Administrative tasks
+- [Office Use Cases](../office/README.md) — Administrative tasks
 - [MCP Guide](../users/features/mcp) — Connecting external tools
 
 ---

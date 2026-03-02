@@ -405,9 +405,8 @@ my-extension/
 
 - [Skills](../users/features/skills) — Create custom AI capabilities
 - [Sub-Agents](../users/features/sub-agents) — Specialized AI assistants
-- [Tools Reference](./tools/introduction) — Built-in tools documentation
+- [Tools Reference](../users/features/tools.md) — Built-in tools documentation
 - [Configuration](../users/configuration/settings) — All settings reference
-- [Roadmap](./roadmap) — Development plan and future features
 
 ---
 
